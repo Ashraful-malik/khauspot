@@ -9,12 +9,12 @@ const teaStallSchema = new Schema(
     location: {
       type: {
         type: String,
-        enum: ["point"],
-        require: true,
+        enum: ["Point"],
+        required: true,
       },
       coordinates: {
         type: [Number],
-        require: true,
+        required: true,
       },
     },
 
@@ -26,15 +26,28 @@ const teaStallSchema = new Schema(
       type: Number,
       default: 0,
     },
+    photos: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
 
     isVerified: {
       type: Boolean,
       default: false,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    totalReviews: {
+      type: Number,
+      default: 0,
+    },
 
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String, // Clerk userId
       required: true,
     },
 
@@ -49,6 +62,7 @@ const teaStallSchema = new Schema(
   },
 );
 teaStallSchema.index({ location: "2dsphere" });
+teaStallSchema.index({ createdBy: 1 });
 
 const TeaStall =
   mongoose.models.TeaStall || mongoose.model("TeaStall", teaStallSchema);

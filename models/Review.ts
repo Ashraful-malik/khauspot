@@ -8,10 +8,15 @@ const reviewSchema = new Schema(
       required: true,
     },
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String, // Clerk userId
       required: true,
     },
+    photos: [
+      {
+        url: String,
+        publicId: String,
+      },
+    ],
     rating: {
       type: Number,
       min: 1,

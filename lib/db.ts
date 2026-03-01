@@ -14,7 +14,7 @@ if (!cached) {
   cached = globalForMongoose.mongoose = { conn: null, promise: null };
 }
 
-const dbConnect = async () => {
+const connectDb = async () => {
   const mongodbUrl = process.env.mongodbUrl!;
   const dbName = process.env.dbName!;
 
@@ -48,4 +48,4 @@ const dbConnect = async () => {
     return cached.conn;
   }
 };
-export default dbConnect;
+export default connectDb;
