@@ -3,16 +3,18 @@ import TeaStall from "@/models/TeaStall";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+// Add stalls
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
-
+    console.log(userId);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     await connectDb();
     const body = await req.json();
     const { name, coordinates, address, photos } = body;
+    console.log(body);
 
     if (!name || !coordinates || coordinates.length !== 2) {
       return NextResponse.json(

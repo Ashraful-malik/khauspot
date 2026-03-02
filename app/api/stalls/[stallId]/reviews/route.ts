@@ -1,10 +1,12 @@
 import connectDb from "@/lib/db";
+import recalculateStallStats from "@/lib/recalculateStallStats";
 import Review from "@/models/Review";
 import TeaStall from "@/models/TeaStall";
 import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
+// Review creation
 export async function POST(
   req: Request,
   { params }: { params: { stallId: string } },
@@ -15,7 +17,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { stallId } = params;
+    const { stallId } = await params;
     if (!mongoose.Types.ObjectId.isValid(stallId)) {
       return NextResponse.json({ error: "Invalid stall id" }, { status: 400 });
     }
@@ -36,7 +38,7 @@ export async function POST(
     }
 
     // create review
-    const review = await Review.create({
+    await Review.create({
       stallId,
       userId,
       rating,
@@ -45,32 +47,8 @@ export async function POST(
     });
 
     //  Recalculate stall stats
+    await recalculateStallStats(stallId);
 
-    const stats = await Review.aggregate([
-      { $match: { stallId: new mongoose.Types.ObjectId(stallId) } },
-      {
-        $group: {
-          _id: "$stallId",
-          avgRating: { $avg: "$rating" },
-          total: { $sum: 1 },
-        },
-      },
-    ]);
-    const avgRating = stats[0]?.avgRating || 0;
-    const totalReviews = stats[0]?.total || 0;
-
-    // verification logic
-    let verificationScore = avgRating * totalReviews;
-    let isVerified = false;
-    if (totalReviews >= 3 || verificationScore >= 5) {
-      isVerified = true;
-    }
-    await TeaStall.findByIdAndUpdate(stallId, {
-      averageRating: avgRating,
-      verificationScore,
-      isVerified,
-      totalReviews,
-    });
     return NextResponse.json(
       {
         message: "Review added successfully",
@@ -86,6 +64,49 @@ export async function POST(
     }
 
     console.error("Review Error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
+}
+
+// Get Reviews
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { stallId: string } },
+) {
+  try {
+    const { stallId } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(stallId)) {
+      return NextResponse.json({ error: "Invalid stall id" }, { status: 400 });
+    }
+    await connectDb();
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "5");
+    const skip = (page - 1) * limit;
+
+    const reviews = await Review.find({ stallId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const totalReviews = await Review.countDocuments({ stallId });
+
+    return NextResponse.json({
+      reviews,
+      pagination: {
+        total: totalReviews,
+        page,
+        limit,
+        pages: Math.ceil(totalReviews / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },

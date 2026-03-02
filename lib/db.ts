@@ -16,7 +16,7 @@ if (!cached) {
 
 const connectDb = async () => {
   const mongodbUrl = process.env.mongodbUrl!;
-  const dbName = process.env.dbName!;
+  const dbName = "teastallsnearme";
 
   if (!mongodbUrl) {
     throw new Error("mongodbUrl environment variable is not defined");
@@ -36,9 +36,16 @@ const connectDb = async () => {
       })
       .then((mongooseInstance) => {
         isConnected = true;
-        mongoose.connection.on("connected", () => {});
-        mongoose.connection.on("error", (err) => {});
-        mongoose.connection.on("disconnected", () => {});
+
+        mongoose.connection.on("connected", () => {
+          console.log("Connected to MongoDB");
+        });
+        mongoose.connection.on("error", (err) => {
+          console.log("MongoDB connection error", err);
+        });
+        mongoose.connection.on("disconnected", () => {
+          console.log("MongoDB disconnected");
+        });
         return mongooseInstance;
       })
       .catch((err) => {
