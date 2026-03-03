@@ -1,13 +1,14 @@
 import connectDb from "@/lib/db";
 import TeaStall from "@/models/TeaStall";
+import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
+import { error } from "console";
 import { NextResponse } from "next/server";
 
 // Add stalls
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
-    console.log(userId);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -56,6 +57,16 @@ export async function POST(req: Request) {
       );
     }
 
+    const localUser = await User.findOne({ clerkId: userId });
+    if (!localUser || !localUser.isDeleted) {
+      return NextResponse.json(
+        {
+          error: "User not active",
+        },
+        { status: 404 },
+      );
+    }
+
     // create stall
     const newStall = await TeaStall.create({
       name,
@@ -64,7 +75,7 @@ export async function POST(req: Request) {
         coordinates: [lng, lat],
       },
       address,
-      createdBy: userId,
+      createdBy: localUser._id,
       photos,
     });
 

@@ -10,18 +10,14 @@ const userSchema = new Schema(
     email: String,
     avatar: String,
 
-    trustScore: {
-      type: Number,
-      default: 1,
-      min: 0,
-    },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
 );
+
+userSchema.index({ clerkId: 1 });
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;

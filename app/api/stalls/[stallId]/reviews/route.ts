@@ -2,9 +2,11 @@ import connectDb from "@/lib/db";
 import recalculateStallStats from "@/lib/recalculateStallStats";
 import Review from "@/models/Review";
 import TeaStall from "@/models/TeaStall";
+import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import { MongoServerError } from "mongodb";
 
 // Review creation
 export async function POST(
@@ -36,11 +38,21 @@ export async function POST(
         { status: 400 },
       );
     }
+    const localUser = await User.findOne({ clerkId: userId });
+
+    if (!localUser || !localUser.isDeleted) {
+      return NextResponse.json(
+        {
+          error: "User not active",
+        },
+        { status: 404 },
+      );
+    }
 
     // create review
     await Review.create({
       stallId,
-      userId,
+      user: localUser._id,
       rating,
       text,
       photos,
@@ -55,14 +67,13 @@ export async function POST(
       },
       { status: 201 },
     );
-  } catch (error: any) {
-    if (error.code === 11000) {
+  } catch (error: unknown) {
+    if (error instanceof MongoServerError && error.code === 11000) {
       return NextResponse.json(
         { error: "You already reviewed this stall" },
         { status: 409 },
       );
     }
-
     console.error("Review Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -89,6 +100,7 @@ export async function GET(
     const skip = (page - 1) * limit;
 
     const reviews = await Review.find({ stallId })
+      .populate("user", "name avatar isDeleted")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)

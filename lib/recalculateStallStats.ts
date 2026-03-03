@@ -3,6 +3,8 @@ import Review from "@/models/Review";
 import TeaStall from "@/models/TeaStall";
 
 export default async function recalculateStallStats(stallId: string) {
+  const TOTAL_REVIEWS_THRESHOLD = 3;
+  const VERIFICATION_SCORE_THRESHOLD = 5;
   const stats = await Review.aggregate([
     { $match: { stallId: new mongoose.Types.ObjectId(stallId) } },
     {
@@ -17,7 +19,9 @@ export default async function recalculateStallStats(stallId: string) {
   const totalReviews = stats[0]?.total || 0;
 
   let verificationScore = avgRating * totalReviews;
-  let isVerified = totalReviews >= 3 || verificationScore >= 5;
+  let isVerified =
+    totalReviews >= TOTAL_REVIEWS_THRESHOLD ||
+    verificationScore >= VERIFICATION_SCORE_THRESHOLD;
 
   await TeaStall.findByIdAndUpdate(stallId, {
     averageRating: avgRating,

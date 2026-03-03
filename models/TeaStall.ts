@@ -47,8 +47,19 @@ const teaStallSchema = new Schema(
     },
 
     createdBy: {
-      type: String, // Clerk userId
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
+    },
+
+    isRemoved: {
+      type: Boolean,
+      default: false,
+    },
+
+    reportCount: {
+      type: Number,
+      default: 0,
     },
 
     duplicateOf: {
@@ -63,6 +74,7 @@ const teaStallSchema = new Schema(
 );
 teaStallSchema.index({ location: "2dsphere" });
 teaStallSchema.index({ createdBy: 1 });
+teaStallSchema.index({ isRemoved: 1 });
 
 const TeaStall =
   mongoose.models.TeaStall || mongoose.model("TeaStall", teaStallSchema);

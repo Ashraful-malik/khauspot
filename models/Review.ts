@@ -8,8 +8,9 @@ const reviewSchema = new Schema(
       ref: "TeaStall",
       required: true,
     },
-    userId: {
-      type: String, // Clerk userId
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     photos: [
@@ -31,7 +32,7 @@ const reviewSchema = new Schema(
   },
   { timestamps: true },
 );
-reviewSchema.index({ stallId: 1, userId: 1 }, { unique: true });
+reviewSchema.index({ stallId: 1, user: 1 }, { unique: true });
 const Review = mongoose.models.Review || mongoose.model("Review", reviewSchema);
 
 export default Review;
