@@ -6,6 +6,8 @@ import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { MongoServerError } from "mongodb";
+import { reportSchema } from "@/lib/validators/report.validator";
+import { validateBody } from "@/lib/validate";
 
 // Report Stall and soft delete
 export async function POST(
@@ -43,8 +45,9 @@ export async function POST(
         { status: 403 },
       );
     }
-    const body = await req.json();
-    const { reason } = body;
+    const data = await validateBody(req, reportSchema);
+    const { reason } = data;
+
     await StallReport.create({
       stall: stall._id,
       user: localUser._id,

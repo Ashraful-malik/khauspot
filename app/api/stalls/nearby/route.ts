@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       },
     })
       .select("name location averageRating totalReviews isVerified")
-      .limit(20)
+      .limit(50)
       .lean();
 
     return NextResponse.json(stalls, { status: 200 });

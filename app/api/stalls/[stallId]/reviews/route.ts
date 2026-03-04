@@ -7,8 +7,10 @@ import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { MongoServerError } from "mongodb";
+import { reviewsSchema } from "@/lib/validators/review.validator";
+import { validateBody } from "@/lib/validate";
 
-// Review creation
+// Add Review
 export async function POST(
   req: Request,
   { params }: { params: { stallId: string } },
@@ -29,8 +31,8 @@ export async function POST(
     if (!stall) {
       return NextResponse.json({ error: "Stall not found" }, { status: 404 });
     }
-    const body = await req.json();
-    const { rating, text, photos } = body;
+    const data = await validateBody(req, reviewsSchema);
+    const { rating, text, photos } = data;
 
     if (!rating || rating < 1 || rating > 5) {
       return NextResponse.json(
