@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 import { MongoServerError } from "mongodb";
 
+// Report Stall and soft delete
 export async function POST(
   req: NextRequest,
   { params }: { params: { stallId: string } },

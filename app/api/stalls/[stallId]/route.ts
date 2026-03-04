@@ -5,6 +5,38 @@ import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+// Get Tea stall Details
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { stallId: string } },
+) {
+  try {
+    await connectDb();
+    const { stallId } = await params;
+    if (!mongoose.Types.ObjectId.isValid(stallId)) {
+      return NextResponse.json({ error: "Invalid stall id" }, { status: 400 });
+    }
+    const stall = await TeaStall.findById(stallId)
+      .populate("createdBy", "name avatar")
+      .select(
+        "name address location averageRating totalReviews isVerified createdBy createdAt",
+      )
+      .lean();
+
+    if (!stall || stall.isRemoved) {
+      return NextResponse.json({ error: "Stall not found" }, { status: 404 });
+    }
+    return NextResponse.json({ stall });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+// Update Stall Details
 export async function PATCH(
   req: NextRequest,
   { params }: { params: { stallId: string } },

@@ -2,8 +2,7 @@ import connectDb from "@/lib/db";
 import TeaStall from "@/models/TeaStall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
-import { error } from "console";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // Add stalls
 export async function POST(req: Request) {
@@ -82,6 +81,47 @@ export async function POST(req: Request) {
     return NextResponse.json(newStall, { status: 201 });
   } catch (error) {
     console.error("Crete Stall Error", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
+  }
+}
+
+// get all stalls under (Bounding box api)
+export async function GET(req: NextRequest) {
+  try {
+    await connectDb();
+    const { searchParams } = new URL(req.url);
+    const newLat = parseInt(searchParams.get("newLat") || "");
+    const newLng = parseInt(searchParams.get("newLng") || "");
+    const swLat = parseInt(searchParams.get("swLat") || "");
+    const swLng = parseInt(searchParams.get("swLng") || "");
+
+    if (isNaN(newLat) || isNaN(newLng) || isNaN(swLat) || isNaN(swLng)) {
+      return NextResponse.json(
+        { error: "Invalid bounding box coordinates" },
+        { status: 400 },
+      );
+    }
+
+    const stalls = await TeaStall.find({
+      isRemoved: false,
+      location: {
+        $geoWithin: {
+          $box: [
+            [swLng, swLat], //bottom left
+            [newLng, newLat], // top right
+          ],
+        },
+      },
+    })
+      .select("name location averageRating totalReviews isVerified")
+      .limit(100);
+    return NextResponse.json(stalls, { status: 200 });
+  } catch (error) {
+    console.error("Get All Stalls Error", error);
+
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },
