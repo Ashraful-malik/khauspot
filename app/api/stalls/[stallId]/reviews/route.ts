@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { MongoServerError } from "mongodb";
 import { reviewsSchema } from "@/lib/validators/review.validator";
 import { validateBody } from "@/lib/validate";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Add Review
 export async function POST(
@@ -19,6 +20,15 @@ export async function POST(
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+      await rateLimit(userId, "createReview", 20, 3600);
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Too many reviews created. Try later." },
+        { status: 429 },
+      );
     }
 
     const { stallId } = await params;
@@ -34,15 +44,9 @@ export async function POST(
     const data = await validateBody(req, reviewsSchema);
     const { rating, text, photos } = data;
 
-    if (!rating || rating < 1 || rating > 5) {
-      return NextResponse.json(
-        { error: "Rating must be between 1 and 5" },
-        { status: 400 },
-      );
-    }
     const localUser = await User.findOne({ clerkId: userId });
 
-    if (!localUser || !localUser.isDeleted) {
+    if (!localUser || localUser.isDeleted) {
       return NextResponse.json(
         {
           error: "User not active",
@@ -54,7 +58,7 @@ export async function POST(
     // create review
     await Review.create({
       stallId,
-      user: localUser._id,
+      user: userId,
       rating,
       text,
       photos,

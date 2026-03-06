@@ -14,8 +14,17 @@ export const createStallSchema = z.object({
     .array(
       z.object({
         url: z.url(),
-        publicId: z.string(),
       }),
     )
     .min(1, "At least one photo required"),
+});
+
+export const updateStallSchema = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(80, "Name too long")
+    .optional(),
+
+  address: z.string().max(200).optional(),
 });

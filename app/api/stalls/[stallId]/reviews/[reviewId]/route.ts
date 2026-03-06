@@ -36,7 +36,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Review not found" }, { status: 404 });
     }
 
-    if (review.userId !== userId) {
+    if (review.user !== userId) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -75,7 +75,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Review not found" }, { status: 404 });
     }
 
-    if (review.userId !== userId) {
+    if (review.user !== userId) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
     await review.deleteOne();

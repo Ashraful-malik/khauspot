@@ -1,5 +1,6 @@
 import z, { ZodType } from "zod";
 
+// Validate request body
 export async function validateBody<T>(
   req: Request,
   schema: ZodType<T>,

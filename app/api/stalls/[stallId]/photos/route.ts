@@ -3,6 +3,7 @@ import TeaStall from "@/models/TeaStall";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+// Get Stall Photos
 export async function GET(
   req: NextRequest,
   { params }: { params: { stallId: string } },

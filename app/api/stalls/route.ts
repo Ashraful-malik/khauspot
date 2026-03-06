@@ -4,8 +4,8 @@ import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { createStallSchema } from "@/lib/validators/stall.validator";
-import z from "zod";
 import { validateBody } from "@/lib/validate";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Create Add stalls
 export async function POST(req: NextRequest) {
@@ -14,24 +14,21 @@ export async function POST(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    try {
+      await rateLimit(userId, "createStall", 5, 3600); // 5 requests per hour
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Too many stalls created. Try later." },
+        { status: 429 },
+      );
+    }
+
     await connectDb();
 
     const data = await validateBody(req, createStallSchema);
 
     const { name, coordinates, address, photos } = data;
-
-    if (!name || !coordinates || coordinates.length !== 2) {
-      return NextResponse.json(
-        { error: "Invalid name or coordinates" },
-        { status: 400 },
-      );
-    }
-    if (!photos || photos.length === 0) {
-      return NextResponse.json(
-        { error: "At least one photo is required" },
-        { status: 400 },
-      );
-    }
     const [lng, lat] = coordinates;
 
     if (typeof lng !== "number" || typeof lat !== "number") {
@@ -61,7 +58,8 @@ export async function POST(req: NextRequest) {
     }
 
     const localUser = await User.findOne({ clerkId: userId });
-    if (!localUser || !localUser.isDeleted) {
+
+    if (!localUser || localUser.isDeleted) {
       return NextResponse.json(
         {
           error: "User not active",
@@ -97,12 +95,12 @@ export async function GET(req: NextRequest) {
   try {
     await connectDb();
     const { searchParams } = new URL(req.url);
-    const newLat = parseInt(searchParams.get("newLat") || "");
-    const newLng = parseInt(searchParams.get("newLng") || "");
-    const swLat = parseInt(searchParams.get("swLat") || "");
-    const swLng = parseInt(searchParams.get("swLng") || "");
+    const neLat = parseFloat(searchParams.get("neLat") || "");
+    const neLng = parseFloat(searchParams.get("neLng") || "");
+    const swLat = parseFloat(searchParams.get("swLat") || "");
+    const swLng = parseFloat(searchParams.get("swLng") || "");
 
-    if (isNaN(newLat) || isNaN(newLng) || isNaN(swLat) || isNaN(swLng)) {
+    if (isNaN(neLat) || isNaN(neLng) || isNaN(swLat) || isNaN(swLng)) {
       return NextResponse.json(
         { error: "Invalid bounding box coordinates" },
         { status: 400 },
@@ -115,14 +113,15 @@ export async function GET(req: NextRequest) {
         $geoWithin: {
           $box: [
             [swLng, swLat], //bottom left
-            [newLng, newLat], // top right
+            [neLng, neLat], // top right
           ],
         },
       },
     })
       .select("name location averageRating totalReviews isVerified")
-      .limit(100);
-    return NextResponse.json(stalls, { status: 200 });
+      .limit(100)
+      .lean();
+    return NextResponse.json({ stalls }, { status: 200 });
   } catch (error) {
     console.error("Get All Stalls Error", error);
 

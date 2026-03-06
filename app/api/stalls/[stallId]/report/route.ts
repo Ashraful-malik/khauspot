@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { MongoServerError } from "mongodb";
 import { reportSchema } from "@/lib/validators/report.validator";
 import { validateBody } from "@/lib/validate";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Report Stall and soft delete
 export async function POST(
@@ -21,12 +22,21 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(params.stallId)) {
+    try {
+      await rateLimit(userId, "reportStall", 10, 3600);
+    } catch (error) {
+      return NextResponse.json(
+        { error: "Too many reports created. Try later." },
+        { status: 429 },
+      );
+    }
+    const { stallId } = await params;
+
+    if (!mongoose.Types.ObjectId.isValid(stallId)) {
       return NextResponse.json({ error: "Invalid Stall ID" }, { status: 400 });
     }
 
     await connectDb();
-    const { stallId } = await params;
     const localUser = await User.findOne({ clerkId: userId });
 
     if (!localUser || localUser.isDeleted) {

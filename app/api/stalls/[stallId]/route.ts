@@ -1,4 +1,6 @@
 import connectDb from "@/lib/db";
+import { validateBody } from "@/lib/validate";
+import { updateStallSchema } from "@/lib/validators/stall.validator";
 import TeaStall from "@/models/TeaStall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
@@ -43,23 +45,27 @@ export async function PATCH(
 ) {
   try {
     const { userId } = await auth();
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { stallId } = await params;
+
     if (!mongoose.Types.ObjectId.isValid(stallId)) {
       return NextResponse.json({ error: "Invalid stall id" }, { status: 400 });
     }
     await connectDb();
 
-    const localUser = await User.findById(userId);
+    const localUser = await User.findOne({ clerkId: userId });
+
     if (!localUser || localUser.isDeleted) {
       return NextResponse.json({ error: "User not active " }, { status: 403 });
     }
 
     const stall = await TeaStall.findById(stallId);
-    if (!stall || !stall.isRemoved) {
+
+    if (!stall || stall.isRemoved) {
       return NextResponse.json({ error: "Stall not found" }, { status: 404 });
     }
 
@@ -76,8 +82,9 @@ export async function PATCH(
       );
     }
 
-    const body = await req.json();
-    const { name, address } = body;
+    const data = await validateBody(req, updateStallSchema);
+    const { name, address } = data;
+
     if (name) stall.name = name.trim();
     if (address) stall.address = address.trim();
 

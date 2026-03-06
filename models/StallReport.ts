@@ -24,6 +24,6 @@ const stallReportSchema = new Schema(
 stallReportSchema.index({ stall: 1, user: 1 }, { unique: true });
 
 const StallReport =
-  mongoose.models.Report || mongoose.model("StallReport", stallReportSchema);
+  mongoose.models.Report || mongoose.model("Report", stallReportSchema);
 
 export default StallReport;
