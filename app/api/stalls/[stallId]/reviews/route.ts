@@ -1,7 +1,7 @@
 import connectDb from "@/lib/db";
 import recalculateStallStats from "@/lib/recalculateStallStats";
 import Review from "@/models/Review";
-import TeaStall from "@/models/TeaStall";
+import Stall from "@/models/Stall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
@@ -37,7 +37,7 @@ export async function POST(
     }
 
     await connectDb();
-    const stall = await TeaStall.findById(stallId);
+    const stall = await Stall.findById(stallId);
     if (!stall) {
       return NextResponse.json({ error: "Stall not found" }, { status: 404 });
     }

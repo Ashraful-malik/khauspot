@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Review from "@/models/Review";
-import TeaStall from "@/models/TeaStall";
+import Stall from "@/models/Stall";
 
 export default async function recalculateStallStats(stallId: string) {
   const TOTAL_REVIEWS_THRESHOLD = 3;
@@ -23,7 +23,7 @@ export default async function recalculateStallStats(stallId: string) {
     totalReviews >= TOTAL_REVIEWS_THRESHOLD ||
     verificationScore >= VERIFICATION_SCORE_THRESHOLD;
 
-  await TeaStall.findByIdAndUpdate(stallId, {
+  await Stall.findByIdAndUpdate(stallId, {
     averageRating: avgRating,
     verificationScore,
     isVerified,

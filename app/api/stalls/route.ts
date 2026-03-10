@@ -1,5 +1,5 @@
 import connectDb from "@/lib/db";
-import TeaStall from "@/models/TeaStall";
+import Stall from "@/models/Stall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     }
     // duplicate detection
-    const existingStall = await TeaStall.findOne({
+    const existingStall = await Stall.findOne({
       location: {
         $near: {
           $geometry: {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     }
 
     // create stall
-    const newStall = await TeaStall.create({
+    const newStall = await Stall.create({
       name,
       location: {
         type: "Point",
@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const stalls = await TeaStall.find({
+    const stalls = await Stall.find({
       isRemoved: false,
       location: {
         $geoWithin: {

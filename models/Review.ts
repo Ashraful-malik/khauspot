@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import TeaStall from "./TeaStall";
+import TeaStall from "./Stall";
 
 const reviewSchema = new Schema(
   {

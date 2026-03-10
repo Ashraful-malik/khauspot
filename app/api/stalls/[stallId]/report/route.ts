@@ -1,6 +1,6 @@
 import connectDb from "@/lib/db";
 import StallReport from "@/models/StallReport";
-import TeaStall from "@/models/TeaStall";
+import Stall from "@/models/Stall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
@@ -43,7 +43,7 @@ export async function POST(
       return NextResponse.json({ error: "User not active" }, { status: 403 });
     }
 
-    const stall = await TeaStall.findById(stallId);
+    const stall = await Stall.findById(stallId);
     if (!stall || stall.isRemoved) {
       return NextResponse.json({ error: "Stall not found" }, { status: 404 });
     }

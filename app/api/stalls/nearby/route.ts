@@ -1,7 +1,8 @@
 import connectDb from "@/lib/db";
-import TeaStall from "@/models/TeaStall";
+import Stall from "@/models/Stall";
 import { NextRequest, NextResponse } from "next/server";
 
+// get nearby stalls
 export async function GET(req: NextRequest) {
   try {
     await connectDb();
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const stalls = await TeaStall.find({
+    const stalls = await Stall.find({
       isRemoved: false,
       location: {
         $near: {

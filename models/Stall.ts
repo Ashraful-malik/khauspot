@@ -57,6 +57,27 @@ const teaStallSchema = new Schema(
       default: false,
     },
 
+    checkinCount: {
+      type: Number,
+      default: 0,
+    },
+    category: {
+      type: String,
+      enum: [
+        "chai",
+        "chaat",
+        "momos",
+        "samosa_snacks",
+        "noodles_maggi",
+        "regional_food",
+        "juice_lassi",
+        "sweets_desserts",
+        "other",
+      ],
+      default: "other",
+      required: true,
+    },
+
     reportCount: {
       type: Number,
       default: 0,
@@ -76,7 +97,6 @@ teaStallSchema.index({ location: "2dsphere" });
 teaStallSchema.index({ createdBy: 1 });
 teaStallSchema.index({ isRemoved: 1 });
 
-const TeaStall =
-  mongoose.models.TeaStall || mongoose.model("TeaStall", teaStallSchema);
+const Stall = mongoose.models.Stall || mongoose.model("Stall", teaStallSchema); //TODO: LATED REMOVE TeaStall adn replace with Stall
 
-export default TeaStall;
+export default Stall;

@@ -1,7 +1,7 @@
 import connectDb from "@/lib/db";
 import { validateBody } from "@/lib/validate";
 import { updateStallSchema } from "@/lib/validators/stall.validator";
-import TeaStall from "@/models/TeaStall";
+import Stall from "@/models/Stall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
@@ -18,7 +18,7 @@ export async function GET(
     if (!mongoose.Types.ObjectId.isValid(stallId)) {
       return NextResponse.json({ error: "Invalid stall id" }, { status: 400 });
     }
-    const stall = await TeaStall.findById(stallId)
+    const stall = await Stall.findById(stallId)
       .populate("createdBy", "name avatar")
       .select(
         "name address location averageRating totalReviews isVerified createdBy createdAt",
@@ -63,7 +63,7 @@ export async function PATCH(
       return NextResponse.json({ error: "User not active " }, { status: 403 });
     }
 
-    const stall = await TeaStall.findById(stallId);
+    const stall = await Stall.findById(stallId);
 
     if (!stall || stall.isRemoved) {
       return NextResponse.json({ error: "Stall not found" }, { status: 404 });
