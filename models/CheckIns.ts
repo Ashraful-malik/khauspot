@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-
 const checkInSchema = new Schema(
   {
     stallId: {
@@ -34,8 +33,9 @@ const checkInSchema = new Schema(
 
 checkInSchema.index({ stallId: 1, userId: 1, day: 1 }, { unique: true });
 checkInSchema.index({ location: "2dsphere" });
+// checkInSchema.index({ createdAt: -1 });
 
 const Checkin =
-  mongoose.models.Report || mongoose.model("Checkin", checkInSchema);
+  mongoose.models.Checkin || mongoose.model("Checkin", checkInSchema);
 
 export default Checkin;

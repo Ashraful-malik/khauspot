@@ -15,19 +15,20 @@ if (!cached) {
 }
 
 const connectDb = async () => {
-  const mongodbUrl = process.env.mongodbUrl!;
-  const dbName = "teastallsnearme";
-
-  if (!mongodbUrl) {
-    throw new Error("mongodbUrl environment variable is not defined");
-  }
-  if (!dbName) {
-    throw new Error("Db name environment variable is not defined");
-  }
   if (cached.conn) {
     return cached.conn;
   }
+
   if (!cached.promise) {
+    const mongodbUrl = process.env.mongodbUrl!;
+    const dbName = "teastallsnearme";
+
+    if (!mongodbUrl) {
+      throw new Error("mongodbUrl environment variable is not defined");
+    }
+    if (!dbName) {
+      throw new Error("Db name environment variable is not defined");
+    }
     cached.promise = mongoose
       .connect(mongodbUrl, {
         dbName: dbName,
@@ -52,6 +53,8 @@ const connectDb = async () => {
         throw err;
       });
     cached.conn = await cached.promise;
+    console.log("MongoDB connected");
+
     return cached.conn;
   }
 };

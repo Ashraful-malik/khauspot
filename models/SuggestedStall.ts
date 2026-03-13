@@ -53,7 +53,6 @@ const suggestedStallSchema = new Schema(
     reviewedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     adminComment: {
       type: String,
@@ -67,6 +66,7 @@ const suggestedStallSchema = new Schema(
 );
 suggestedStallSchema.index({ location: "2dsphere" });
 suggestedStallSchema.index({ status: 1 });
+// suggestedStallSchema.index({ createdAt: -1 });
 
 export default mongoose.models.SuggestedStall ||
   mongoose.model("SuggestedStall", suggestedStallSchema);

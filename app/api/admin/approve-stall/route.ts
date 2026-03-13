@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         { status: 404 },
       );
     }
-    const [lng, lat] = userSuggestedStalls.location.getGeoAddress;
+    const [lng, lat] = userSuggestedStalls.location.coordinates;
     const address = await getGeoAddress(lat, lng);
 
     await Stall.create({

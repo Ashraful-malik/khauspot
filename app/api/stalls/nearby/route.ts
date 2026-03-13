@@ -31,7 +31,9 @@ export async function GET(req: NextRequest) {
         },
       },
     })
-      .select("name location averageRating totalReviews isVerified")
+      .select(
+        "name location category averageRating totalReviews isVerified checkinCount",
+      )
       .limit(50)
       .lean();
 

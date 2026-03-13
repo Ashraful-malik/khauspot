@@ -21,7 +21,7 @@ export async function GET(
     const stall = await Stall.findById(stallId)
       .populate("createdBy", "name avatar")
       .select(
-        "name address location averageRating totalReviews isVerified createdBy createdAt",
+        "name address category checkinCount location averageRating totalReviews isVerified createdBy createdAt",
       )
       .lean();
 

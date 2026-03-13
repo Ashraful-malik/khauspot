@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();
+
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -20,24 +21,34 @@ export async function POST(req: NextRequest) {
     await connectDb();
     const body = await req.json();
     const { suggestionId, adminNote } = body;
+
     if (!suggestionId) {
       return NextResponse.json(
-        { error: "Missing suggestion id" },
+        { error: "Suggestion ID required" },
         { status: 400 },
       );
     }
 
-    const userSuggestedStalls = await SuggestedStall.findById(suggestionId);
-    if (!userSuggestedStalls) {
-      return NextResponse.json({ error: "Stall not found" }, { status: 404 });
-    }
-    userSuggestedStalls.status = "rejected";
-    userSuggestedStalls.adminComment = adminNote;
-    userSuggestedStalls.save();
-    return NextResponse.json(
-      { message: "Rejected successfully" },
-      { status: 200 },
+    const rejectedStall = await SuggestedStall.findOneAndUpdate(
+      {
+        _id: suggestionId,
+        status: "pending",
+      },
+      {
+        status: "rejected",
+        ...(adminNote && { adminComment: adminNote }),
+      },
+      { new: true },
     );
+
+    if (!rejectedStall) {
+      return NextResponse.json(
+        { error: "Stall not found or already processed" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({ message: "Rejected stall" }, { status: 200 });
   } catch (error) {
     console.error("error while stall rejection");
     return NextResponse.json(

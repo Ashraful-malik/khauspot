@@ -17,12 +17,12 @@ export const suggestedStallSchema = z.object({
     "other",
   ]),
   coordinates: z.array(z.number()).length(2, "Coordinates must be [lng, lat]"),
-  photos: z.array(
-    z
-      .object({
+  photos: z
+    .array(
+      z.object({
         url: z.url(),
         publicId: z.string().optional(),
-      })
-      .optional(),
-  ),
+      }),
+    )
+    .optional(),
 });

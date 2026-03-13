@@ -19,6 +19,7 @@ export async function GET(req: NextResponse) {
     const client = await clerkClient();
     const clerkUser = await client.users.getUser(userId);
     const role = clerkUser.publicMetadata.role;
+    console.log("Role from clerk api=> ", role);
 
     if (role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -44,6 +45,22 @@ export async function GET(req: NextResponse) {
         { status: 404 },
       );
     }
+    const totalSuggestions = await SuggestedStall.countDocuments({
+      status: "pending",
+    });
+    return NextResponse.json(
+      {
+        suggestions,
+        pagination: {
+          total: totalSuggestions,
+          page,
+          limit,
+          pages: Math.ceil(totalSuggestions / limit),
+        },
+      },
+
+      { status: 200 },
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Internal server error" },

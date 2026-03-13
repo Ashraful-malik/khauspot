@@ -7,6 +7,7 @@ import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
+// Suggest stall (suggested by user)
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();
@@ -53,7 +54,6 @@ export async function POST(req: NextRequest) {
     }
 
     // check duplication pending suggestion in suggestedStall
-
     const existingSuggestion = await SuggestedStall.findOne({
       status: "pending",
       location: {
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
         {
           type: "duplicate_suggestion",
           message:
-            "A stall suggestion for this location is already pending review",
+            "A stall suggestion for this location is already in pending for approval",
         },
         { status: 409 },
       );

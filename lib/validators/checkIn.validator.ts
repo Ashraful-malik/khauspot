@@ -6,5 +6,6 @@ export const createCheckInSchema = z.object({
     .string()
     .min(2, "Comment must be at least 2 characters")
     .optional(),
+
   accuracy: z.number().min(0).max(10000),
 });
