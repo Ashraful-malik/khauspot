@@ -4,7 +4,6 @@ import { rateLimit } from "@/lib/ratelimit";
 import Checkin from "@/models/CheckIns";
 import SuggestedStall from "@/models/SuggestedStall";
 import { NextRequest, NextResponse } from "next/server";
-import "@/models";
 
 // Get Recent Activity
 export async function GET(req: NextRequest) {
