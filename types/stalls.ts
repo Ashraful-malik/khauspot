@@ -5,7 +5,7 @@ export type MapBounds = {
   swLng: number;
 };
 
-export type TeaStall = {
+export type BoundStalls = {
   _id: string;
   name: string;
   location: {
@@ -18,5 +18,5 @@ export type TeaStall = {
 };
 
 export type StallsResponse = {
-  stalls: TeaStall[];
+  stalls: BoundStalls[];
 };
