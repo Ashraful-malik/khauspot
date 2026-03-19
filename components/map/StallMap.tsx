@@ -52,7 +52,7 @@ export default function StallMap() {
     <MapContainer
       center={[12.9716, 77.5946]}
       zoom={15}
-      style={{ height: "100vh", width: "100%" }}
+      className="w-full h-full"
     >
       <TileLayer
         attribution="&copy; OpenStreetMap"
