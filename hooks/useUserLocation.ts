@@ -38,7 +38,8 @@ export function useUserLocation() {
             },
           );
           // const address = res.data.display_name;
-          const address = `${res.data.address.leisure},${res.data.address.road},${res.data.address.city}`;
+          console.log(res.data);
+          const address = `${res.data.address.amenity},${res.data.address.road},${res.data.address.city}`;
           setLocation({
             lat,
             lng,

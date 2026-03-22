@@ -6,15 +6,19 @@ import FileUpload from "@/components/shared/file-upload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { STALL_CATEGORIES } from "@/lib/constants";
-import { MapPin } from "lucide-react";
 import { useState } from "react";
 
 export default function SuggestStall() {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleCategories = showAll
+    ? STALL_CATEGORIES
+    : STALL_CATEGORIES.slice(0, 3);
   return (
-    <PageWrapper>
-      <div className="px-4 py-4 space-y-6 overflow-y-auto mb-24">
+    <PageWrapper className="">
+      <div className="px-4 py-4 space-y-6  mb-24 overflow-y-auto">
         {/* Title */}
         <h1 className="text-lg font-semibold">Suggest a stall</h1>
 
@@ -33,21 +37,32 @@ export default function SuggestStall() {
         <LocationField />
 
         {/* Category Pills (FAST selection) */}
-        <div className="flex flex-wrap gap-2">
-          {STALL_CATEGORIES.map((cat) => (
+        <div>
+          <div className="flex flex-wrap gap-2">
+            {visibleCategories.map((cat) => (
+              <button
+                key={cat.value}
+                onClick={() => setCategory(cat.value)}
+                className={`px-3 py-1.5 rounded-full text-sm border ${
+                  category === cat.value
+                    ? "bg-[#FF6B35] text-white"
+                    : "bg-gray-100 text-gray-700"
+                }`}
+              >
+                <span>{cat.icon}</span>
+                {cat.label}
+              </button>
+            ))}
+          </div>
+          {/* show more or less */}
+          {STALL_CATEGORIES.length > 5 && (
             <button
-              key={cat.value}
-              onClick={() => setCategory(cat.value)}
-              className={`px-3 py-1.5 rounded-full text-sm border ${
-                category === cat.value
-                  ? "bg-[#FF6B35] text-white"
-                  : "bg-gray-100 text-gray-700"
-              }`}
+              onClick={() => setShowAll(!showAll)}
+              className="mt-2 text-xs text-[#FF6B35] font-medium"
             >
-              <span>{cat.icon}</span>
-              {cat.label}
+              {showAll ? "Show less" : "Show more"}
             </button>
-          ))}
+          )}
         </div>
 
         {/* Submit Button */}
@@ -56,7 +71,7 @@ export default function SuggestStall() {
         </Button>
 
         {/* Optional Upload */}
-        <div className="pt-4 border-t">
+        <div className="pt-4 border-t ">
           <p className="text-sm text-gray-500 mb-2">Add photo (optional)</p>
 
           {/* reuse your FileUpload */}
