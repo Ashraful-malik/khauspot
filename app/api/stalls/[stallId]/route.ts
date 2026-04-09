@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-// Get Tea stall Details
+// stall Details
 export async function GET(
   req: NextRequest,
   { params }: { params: { stallId: string } },

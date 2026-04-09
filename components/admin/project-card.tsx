@@ -11,6 +11,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export type ProjectType = {
   project: {
@@ -21,48 +23,50 @@ export type ProjectType = {
   key: number;
 };
 function ProjectCard({ project }: ProjectType) {
+  const lat = 12.9716;
+  const lng = 77.5946;
   const showToaster = () => {
-    console.log("working");
-    toast.success("Event has not been created");
+    toast.success("Project approved successfully");
   };
   return (
     <div className="bg-white rounded-xl shadow-xs border p-4 space-y-3">
       {/* Title */}
       <div>
-        <h2 className="font-semibold text-lg">{project.name}</h2>
-        <p className="text-sm text-gray-500">{project.location}</p>
+        <h2 className="font-semibold text-lg text-foreground">
+          {project.name}
+        </h2>
+        <p className="text-sm text-muted-foreground">{project.location}</p>
       </div>
 
       {/* Map Link */}
-      <button className="flex items-center gap-2 text-sm text-blue-600 hover:underline">
+      <Link
+        href={`map?lat=${lat}&lng=${lng}`}
+        className="flex items-center gap-2 text-sm text-secondary hover:underline"
+      >
         📍 View on Map
-      </button>
+      </Link>
 
       {/* Actions */}
       <div className="flex gap-3 pt-2">
-        <button
-          className="flex-1 bg-green-500 text-white py-1.5 rounded-lg hover:bg-green-600"
-          onClick={showToaster}
-        >
+        <Button onClick={showToaster} className="bg-accent">
           Approve
-        </button>
+        </Button>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <button className="flex-1 bg-red-500 text-white py-1.5 rounded-lg hover:bg-red-600">
-              Reject
-            </button>
+            <Button variant="destructive">Reject</Button>
           </AlertDialogTrigger>
           <AlertDialogContent size="sm">
             <AlertDialogHeader>
-              <AlertDialogTitle>Deleting Stall</AlertDialogTitle>
+              <AlertDialogTitle>Reject Stall</AlertDialogTitle>
               <AlertDialogDescription>
-                Are your Sure you want to delete this stall.
+                Are you sure you want to delete this stall? This action cannot
+                be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>Delete</AlertDialogAction>
+              <AlertDialogAction>Reject</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

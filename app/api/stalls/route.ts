@@ -7,7 +7,7 @@ import { createStallSchema } from "@/lib/validators/stall.validator";
 import { validateBody } from "@/lib/validate";
 import { rateLimit } from "@/lib/ratelimit";
 
-// Create Add stalls
+// create stalls
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      await rateLimit(userId, "createStall", 5, 3600); // 5 requests per hour
+      // await rateLimit(userId, "createStall", 5, 3600); // 5 requests per hour
     } catch (error) {
       return NextResponse.json(
         { error: "Too many stalls created. Try later." },
@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
     await connectDb();
 
     const data = await validateBody(req, createStallSchema);
-
-    const { name, coordinates, address, photos } = data;
-    const [lng, lat] = coordinates;
+    console.log("Data", data);
+    const { name, coordinates, address, photos, category } = data;
+    const [lat, lng] = coordinates;
 
     if (typeof lng !== "number" || typeof lat !== "number") {
       return NextResponse.json(
@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
       address,
       createdBy: localUser._id,
       photos,
+      category,
     });
 
     return NextResponse.json(newStall, { status: 201 });
@@ -118,7 +119,9 @@ export async function GET(req: NextRequest) {
         },
       },
     })
-      .select("name location averageRating totalReviews isVerified")
+      .select(
+        "name location averageRating totalReviews isVerified category checkinCount",
+      )
       .limit(100)
       .lean();
     return NextResponse.json({ stalls }, { status: 200 });

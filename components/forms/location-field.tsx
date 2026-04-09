@@ -25,12 +25,12 @@ export default function LocationField() {
         onClick={() => {
           if (mode === "auto") getLocation();
         }}
-        className="flex items-center justify-between bg-gray-100 p-3 rounded-lg cursor-pointer"
+        className="flex items-center justify-between bg-muted p-3 rounded-lg cursor-pointer"
       >
         <div className="flex items-center gap-2 text-sm text-gray-600 w-full">
           {mode === "auto" ? (
             <>
-              <MapPin className="h-4 w-4 text-red-500" />
+              <MapPin className="h-4 w-4 text-secondary" />
               {loading ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -61,7 +61,7 @@ export default function LocationField() {
 
               {/* Save Button */}
               <button
-                className="text-xs bg-orange-500 text-white px-2 py-1 rounded-md disabled:opacity-50"
+                className="text-xs bg-primary text-white px-2 py-1 rounded-md disabled:opacity-50"
                 disabled={!manualValue.trim()}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -89,7 +89,7 @@ export default function LocationField() {
         {/* Toggle Button */}
         {!loading && mode === "auto" && (
           <button
-            className="text-xs text-orange-500 ml-2 whitespace-nowrap"
+            className="text-xs text-secondary ml-2 whitespace-nowrap"
             onClick={(e) => {
               e.stopPropagation();
               setMode("manual");

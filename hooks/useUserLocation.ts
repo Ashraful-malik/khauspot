@@ -26,7 +26,7 @@ export function useUserLocation() {
         async (pos) => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
-          //reverse geocoading
+          //reverse geocoading api
           const res = await axios.get(
             `https://nominatim.openstreetmap.org/reverse`,
             {

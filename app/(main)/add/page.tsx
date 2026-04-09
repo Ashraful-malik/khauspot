@@ -17,14 +17,14 @@ export default function SuggestStall() {
     ? STALL_CATEGORIES
     : STALL_CATEGORIES.slice(0, 3);
   return (
-    <PageWrapper className="">
-      <div className="px-4 py-4 space-y-6  mb-24 overflow-y-auto">
+    <PageWrapper className="max-w-6xl mx-auto ">
+      <div className="px-4 py-4 space-y-6  pb-24 md:mb-0 overflow-y-auto custom-scrollbar">
         {/* Title */}
-        <h1 className="text-lg font-semibold">Suggest a stall</h1>
+        <h1 className="text-2xl font-semibold">Suggest a stall</h1>
 
         {/* Name Input */}
         <div>
-          <p className="text-sm text-gray-500 mb-1">Stall name</p>
+          <p className="text-sm text-foreground mb-1">Stall name</p>
           <Input
             placeholder="e.g. Sharma Chai"
             value={name}
@@ -33,7 +33,6 @@ export default function SuggestStall() {
         </div>
 
         {/* Location (Auto) */}
-
         <LocationField />
 
         {/* Category Pills (FAST selection) */}
@@ -45,8 +44,8 @@ export default function SuggestStall() {
                 onClick={() => setCategory(cat.value)}
                 className={`px-3 py-1.5 rounded-full text-sm border ${
                   category === cat.value
-                    ? "bg-[#FF6B35] text-white"
-                    : "bg-gray-100 text-gray-700"
+                    ? "bg-secondary text-white"
+                    : "bg-muted text-gray-700"
                 }`}
               >
                 <span>{cat.icon}</span>
@@ -58,7 +57,7 @@ export default function SuggestStall() {
           {STALL_CATEGORIES.length > 5 && (
             <button
               onClick={() => setShowAll(!showAll)}
-              className="mt-2 text-xs text-[#FF6B35] font-medium"
+              className="mt-2 text-xs text-secondary font-medium"
             >
               {showAll ? "Show less" : "Show more"}
             </button>
@@ -66,7 +65,7 @@ export default function SuggestStall() {
         </div>
 
         {/* Submit Button */}
-        <Button className="w-full bg-[#FF6B35] text-white" size="lg">
+        <Button className="w-full bg-primary text-white" size="lg">
           Submit Stall
         </Button>
 

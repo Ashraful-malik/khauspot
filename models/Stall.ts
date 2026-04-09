@@ -74,7 +74,6 @@ const teaStallSchema = new Schema(
         "sweets_desserts",
         "other",
       ],
-      default: "other",
       required: true,
     },
 

@@ -1,7 +1,7 @@
 "use client";
-import ProjectList from "@/components/admin/project-list";
+
+import AdminHeader from "@/components/admin/admin-header";
 import Sidebar from "@/components/layout/Sidebar";
-import { Menu } from "lucide-react";
 import { ReactNode, useState } from "react";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -30,20 +30,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Main */}
       <div className="flex-1 flex flex-col">
         {/* Topbar */}
-        <header className="h-14 bg-white border-b flex items-center px-4">
-          {/* Hamburger */}
-          <button
-            className="md:hidden mr-3 text-xl"
-            onClick={() => setOpen(true)}
-          >
-            <Menu />
-          </button>
-
-          <h1 className="font-semibold">Admin Panel</h1>
-        </header>
+        <AdminHeader onNavigate={() => setOpen(true)} />
 
         {/* Content */}
-        <main className="flex-1 p-4 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
   );

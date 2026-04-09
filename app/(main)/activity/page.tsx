@@ -25,11 +25,81 @@ export default function ActivityPage() {
       avatar:
         "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     },
+    {
+      id: 3,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      id: 4,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      id: 5,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      id: 6,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      id: 7,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      id: 8,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      id: 9,
+      type: "suggest",
+      user: "Priya",
+      stall: "Station Momos",
+      comment: "",
+      time: "10 min ago",
+      avatar:
+        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
   ];
 
   return (
-    <PageWrapper>
-      <div className="px-4 py-4 space-y-4">
+    <PageWrapper className="max-w-6xl mx-auto overflow-y-auto custom-scrollbar">
+      <div className="px-4 py-4 space-y-4 mb-24 md:mb-0">
         {/* Header */}
         <h1 className="text-lg font-semibold">Activity</h1>
 

@@ -47,12 +47,12 @@ function NavItem({ href, icon: Icon, isActive, title }: NavItemProps) {
       <Icon
         size={20}
         className={`transition-all duration-200 ${
-          isActive ? "scale-110 text-blue-600" : "scale-100 text-gray-400"
+          isActive ? "scale-110 text-primary" : "scale-100 text-gray-400"
         }`}
       />
 
       <span
-        className={`text-xs ${isActive ? "text-blue-600 font-medium" : "text-gray-400 "}`}
+        className={`text-xs ${isActive ? "text-primary font-medium" : "text-gray-400 "}`}
       >
         {title}
       </span>

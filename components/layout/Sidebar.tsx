@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -7,9 +6,8 @@ export default function Sidebar({ onNavigate }: { onNavigate: () => void }) {
   const pathname = usePathname();
   const linkClass = (path: string) =>
     `block p-2 rounded ${
-      pathname.startsWith(path) ? "bg-gray-200" : "hover:bg-gray-100"
+      pathname.startsWith(path) ? "bg-gray-100" : "hover:bg-gray-100"
     }`;
-  console.log(pathname);
 
   const navlinks = [
     {

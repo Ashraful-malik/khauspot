@@ -15,11 +15,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
     await connectDb();
-    console.log(
-      "Registered models:",
-      Object.keys((await import("mongoose")).default.models),
-    );
-
     const checkins = await Checkin.aggregate([
       { $sort: { createdAt: -1 } },
       { $limit: 10 },

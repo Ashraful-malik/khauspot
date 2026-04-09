@@ -17,6 +17,18 @@ export const createStallSchema = z.object({
       }),
     )
     .min(1, "At least one photo required"),
+
+  category: z.enum([
+    "chai",
+    "chaat",
+    "momos",
+    "samosa_snacks",
+    "noodles_maggi",
+    "regional_food",
+    "juice_lassi",
+    "sweets_desserts",
+    "other",
+  ]),
 });
 
 export const updateStallSchema = z.object({

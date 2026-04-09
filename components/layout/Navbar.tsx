@@ -1,67 +1,82 @@
 "use client";
 import Link from "next/link";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
 import Container from "./Container";
 import { CirclePlus, History, House, MapPinned } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { NavItemProps, NavLinksProps } from "@/types/navbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const navItems: NavLinksProps[] = [
+const navItems = [
   { title: "Home", href: "/", icon: House },
   { title: "Map", href: "/map", icon: MapPinned },
   { title: "Add", href: "/add", icon: CirclePlus },
   { title: "Activity", href: "/activity", icon: History },
 ];
+
 export default function Navbar({ className }: { className?: string }) {
   const pathName = usePathname();
-  return (
-    <nav className={`bg-white w-full  border-b ${className}`}>
-      <Container className="flex items-center justify-between h-full">
-        <div className="text-xl font-bold">StreetFood</div>
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem className="flex gap-4 ">
-              {navItems.map((item) => {
-                const isActive =
-                  item.href === "/"
-                    ? pathName === "/"
-                    : pathName.startsWith(item.href);
 
-                return (
-                  <NavLinks
-                    href={item.href}
-                    title={item.title}
-                    icon={item.icon}
-                    isActive={isActive}
-                    key={item.href}
-                  />
-                );
-              })}
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+  return (
+    <nav
+      className={`h-16  top-0 z-50 
+      bg-white/80 
+      border-b border-gray-200 
+      ${className}`}
+    >
+      <Container className="flex items-center justify-between h-full">
+        {/* Logo */}
+        <div className="text-xl font-semibold tracking-tight">StreetFood</div>
+
+        {/* Nav Links */}
+        <div className="flex items-center  gap-4">
+          <div className="hidden md:flex items-center gap-2 bg-gray-100 p-1 rounded-xl">
+            {navItems.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathName === "/"
+                  : pathName.startsWith(item.href);
+
+              return <NavLink key={item.href} {...item} isActive={isActive} />;
+            })}
+          </div>
+          {/* use icon */}
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
       </Container>
     </nav>
   );
 }
 
-function NavLinks({ title, href, icon: Icon, isActive }: NavItemProps) {
+type NavItemProps = {
+  title: string;
+  href: string;
+  icon: React.ComponentType<any>;
+  isActive: boolean;
+};
+function NavLink({ title, href, icon: Icon, isActive }: NavItemProps) {
   return (
-    <NavigationMenuLink
-      asChild
-      className={`${navigationMenuTriggerStyle()}  ${isActive ? "text-primary " : "text-muted-foreground"} hidden md:flex`}
-      key={href}
+    <Link
+      href={href}
+      className={`
+        flex items-center gap-2 px-4 py-2 rounded-lg
+        text-sm font-medium transition-all duration-200
+        
+        ${
+          isActive
+            ? "bg-white shadow text-secondary"
+            : "text-gray-500 hover:text-gray-900 hover:bg-white/60"
+        }
+      `}
     >
-      <Link href={href}>
-        <Icon size={20} />
-        {title}
-      </Link>
-    </NavigationMenuLink>
+      <Icon
+        size={18}
+        className={`transition-transform duration-200 ${
+          isActive ? "scale-110" : "group-hover:scale-105"
+        }`}
+      />
+      {title}
+    </Link>
   );
 }

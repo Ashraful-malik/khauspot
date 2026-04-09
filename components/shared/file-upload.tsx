@@ -31,7 +31,7 @@ export default function FileUpload() {
         onClick={() => inputRef.current?.click()}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
-        className="cursor-pointer rounded-2xl border-2 border-dashed border-gray-300 bg-linear-to-br from-gray-50 to-white p-6 text-center transition-all hover:border-blue-500 hover:bg-blue-50"
+        className="cursor-pointer rounded-2xl border-2 border-dashed border-gray-300 bg-linear-to-br from-gray-50 to-white p-6 text-center transition-all hover:border-secondary hover:bg-blue-50"
       >
         <input
           ref={inputRef}
@@ -49,7 +49,7 @@ export default function FileUpload() {
 
             <button
               type="button"
-              className="mt-2 rounded-md bg-blue-600 px-4 py-2 text-sm text-white shadow hover:bg-blue-700"
+              className="mt-2 rounded-md bg-secondary px-4 py-2 text-sm text-white shadow hover:bg-secondary"
             >
               Choose File
             </button>
@@ -74,7 +74,7 @@ export default function FileUpload() {
                 setFile(null);
                 setPreview(null);
               }}
-              className="text-xs text-red-500 hover:underline"
+              className="text-xs text-secondary hover:underline"
             >
               Remove
             </button>

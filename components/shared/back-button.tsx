@@ -6,7 +6,7 @@ function BackButton() {
   const router = useRouter();
 
   return (
-    <div className="absolute  top-4 left-4 z-10">
+    <div className="absolute top-4 left-4 z-10">
       <button
         onClick={() => router.back()}
         className="bg-white/80 backdrop-blur p-2 rounded-full shadow"

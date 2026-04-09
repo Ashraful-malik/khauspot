@@ -7,8 +7,10 @@ import Stall from "@/models/Stall";
 import User from "@/models/User";
 import { auth } from "@clerk/nextjs/server";
 import { MongoServerError } from "mongodb";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
+// Create Checkin
 export async function POST(
   req: NextRequest,
   { params }: { params: { stallId: string } },
@@ -101,6 +103,59 @@ export async function POST(
         { status: 409 },
       );
     }
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+// get checkins of a particular stall
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { stallId: string } },
+) {
+  try {
+    await connectDb();
+    const { stallId } = await params;
+    if (!mongoose.Types.ObjectId.isValid(stallId)) {
+      return NextResponse.json({ error: "Invalid stall id" }, { status: 400 });
+    }
+    const stallObjectId = new mongoose.Types.ObjectId(stallId);
+
+    const stallExists = await Stall.exists({ _id: stallObjectId });
+    if (!stallExists) {
+      return NextResponse.json({ error: "Stall not found" }, { status: 404 });
+    }
+
+    const checkins = await Checkin.aggregate([
+      { $match: { stallId: stallObjectId } },
+      { $sort: { createdAt: -1 } },
+
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+
+      { $unwind: "$user" },
+      {
+        $project: {
+          type: { $literal: "checkin" },
+          createdAt: 1,
+          "user.name": 1,
+          "user.avatar": 1,
+          comment: 1,
+        },
+      },
+    ]);
+    console.log(checkins);
+    return NextResponse.json({ checkins }, { status: 200 });
+  } catch (error) {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

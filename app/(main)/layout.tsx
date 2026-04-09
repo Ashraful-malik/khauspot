@@ -4,10 +4,10 @@ import { ReactNode } from "react";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       {/* Desktop navbar */}
       <div>
-        <Navbar className="h-12 shrink-0" />
+        <Navbar />
       </div>
       {/* page content */}
       <main className=" md:pb-0 flex-1 overflow-hidden">{children}</main>

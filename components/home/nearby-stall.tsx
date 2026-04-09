@@ -8,8 +8,8 @@ export default function NearByStall() {
       className="mt-6 mb-10 h-full overflow-y-auto"
     >
       {/* heading */}
-      <h1 className="text-lg font-bold">Popular Stalls Near You</h1>
-      <div className="grid md:grid-cols-3 md:gap-3 gap-4 mt-4 md:mb-8 ">
+      <h1 className="text-2xl font-bold">Popular Stalls Near You</h1>
+      <div className="grid md:grid-cols-3 md:gap-3 gap-4 mt-8 md:mb-8 ">
         {/* nearby stall cards */}
 
         {[...Array(5)].map((_, i) => (
