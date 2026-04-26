@@ -1,6 +1,6 @@
 "use client";
 import StallCard from "@/components/shared/stall-card";
-import { useNearbyStall } from "@/hooks/useNearbyStall";
+import { useNearbyStall } from "@/hooks/tanstack/useNearbyStall";
 import { Coords } from "@/types/map";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { LocateFixed, LocateOff, Plus } from "lucide-react";
 import CardSkeleton from "@/components/skelaton/CardSkeleton";
 import MapLoader from "@/components/skelaton/MapLoader";
-import { Stall } from "@/types/stalls";
 import { calculateDistance } from "@/lib/utils/distance";
 
 const StallMap = dynamic(() => import("@/components/map/StallMap"), {
@@ -102,7 +101,7 @@ export default function Page() {
     );
   };
 
-  // final final list data
+  // final  list data
   function getFinalList() {
     const MIN_ITEMS = 12;
     if (isExploring) {
@@ -140,7 +139,7 @@ export default function Page() {
 
   useEffect(() => {
     if (userLocation) {
-      localStorage.setItem("useCoords", JSON.stringify(userLocation));
+      localStorage.setItem("userCoords", JSON.stringify(userLocation));
     }
   }, [userLocation]);
 

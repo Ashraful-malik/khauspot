@@ -5,6 +5,7 @@ import Provider from "./provider";
 import "leaflet/dist/leaflet.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const be_vietnam_pro = Be_Vietnam_Pro({
@@ -26,8 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", be_vietnam_pro.className)}>
       <body className={` antialiased`}>
-        <Provider>{children}</Provider>
-        <Toaster />
+        <ClerkProvider>
+          <Provider>{children}</Provider>
+          <Toaster />
+        </ClerkProvider>
       </body>
     </html>
   );

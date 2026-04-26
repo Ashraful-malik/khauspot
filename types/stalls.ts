@@ -45,3 +45,15 @@ export type Stall = {
   createdAt: string;
   updatedAt: string;
 };
+
+// create stall formData
+export type CreateStall = {
+  name: string;
+  address: string;
+  coordinates: [number, number];
+  photos: {
+    url: string;
+    publicId: string;
+  }[];
+  category: string;
+};

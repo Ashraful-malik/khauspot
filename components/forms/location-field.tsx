@@ -1,106 +1,117 @@
 "use client";
 
 import { useUserLocation } from "@/hooks/useUserLocation";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Loader2, Map } from "lucide-react";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { Button } from "../ui/button";
 
-export default function LocationField() {
-  const { error, getLocation, loading, location, setManualLocation } =
-    useUserLocation();
+const LocationPicker = dynamic(
+  () => import("@/components/forms/LocationPickerModal"),
+  { ssr: false },
+);
 
-  const [mode, setMode] = useState<"auto" | "manual">("auto");
-  const [manualValue, setManualValue] = useState("");
+interface LocationFieldProps {
+  setLocation: (location: {
+    lat: number;
+    lng: number;
+    address: string;
+  }) => void;
+}
 
-  // Pre-fill manual input if location already exists
+export default function LocationField({ setLocation }: LocationFieldProps) {
+  const { getLocation, loading, location, error } = useUserLocation();
+  console.log("location from map field ", location);
+
+  const [isMapOpen, setIsMapOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<{
+    lat: number;
+    lng: number;
+    address: string;
+  } | null>(null);
+  // Sync auto location
   useEffect(() => {
-    if (location?.address) {
-      setManualValue(location.address);
+    if (location) {
+      const newLocation = {
+        lat: location.lat,
+        lng: location.lng,
+        address: location.address,
+      };
+      setSelectedAddress(location.address);
+      setSelectedLocation(newLocation);
+      setLocation(newLocation);
     }
-  }, [location]);
+  }, [location, setLocation]);
 
   return (
-    <div className="space-y-2">
-      {/* location box */}
-      <div
-        onClick={() => {
-          if (mode === "auto") getLocation();
-        }}
-        className="flex items-center justify-between bg-muted p-3 rounded-lg cursor-pointer"
-      >
-        <div className="flex items-center gap-2 text-sm text-gray-600 w-full">
-          {mode === "auto" ? (
-            <>
-              <MapPin className="h-4 w-4 text-secondary" />
-              {loading ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Detecting location...
-                </span>
-              ) : location ? (
-                <span className="truncate max-w-40">{location.address}</span>
-              ) : (
-                <span>Tap to detect location</span>
-              )}
-            </>
-          ) : (
-            <div className="flex items-center gap-2 w-full">
-              <input
-                autoFocus
-                type="text"
-                value={manualValue}
-                onChange={(e) => setManualValue(e.target.value)}
-                placeholder="Enter location"
-                className="w-full text-sm bg-transparent outline-none"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && manualValue.trim()) {
-                    setManualLocation(manualValue);
-                    setMode("auto");
-                  }
-                }}
-              />
+    <div className="space-y-3">
+      {/* 🗺 Map Picker Modal */}
+      {isMapOpen && (
+        <LocationPicker
+          onClose={() => setIsMapOpen(false)}
+          onSelect={async (coords) => {
+            setIsMapOpen(false);
 
-              {/* Save Button */}
-              <button
-                className="text-xs bg-primary text-white px-2 py-1 rounded-md disabled:opacity-50"
-                disabled={!manualValue.trim()}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setManualLocation(manualValue);
-                  setMode("auto");
-                }}
-              >
-                Save
-              </button>
+            // 🔥 reverse geocoding
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?lat=${coords.lat}&lon=${coords.lng}&format=json`,
+            );
+            const data = await res.json();
 
-              {/* Cancel Button */}
-              <button
-                className="text-xs text-gray-500"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMode("auto");
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </div>
+            const address = data.display_name || "Selected location";
 
-        {/* Toggle Button */}
-        {!loading && mode === "auto" && (
-          <button
-            className="text-xs text-secondary ml-2 whitespace-nowrap"
-            onClick={(e) => {
-              e.stopPropagation();
-              setMode("manual");
-            }}
-          >
-            Enter Manually
-          </button>
+            const newLocation = {
+              lat: coords.lat,
+              lng: coords.lng,
+              address,
+            };
+
+            setSelectedAddress(address);
+            setSelectedLocation(newLocation);
+            setLocation(newLocation);
+          }}
+        />
+      )}
+
+      {/* 📍 Selected Location Display */}
+      <div className="bg-muted p-3 rounded-lg text-sm">
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Detecting location...
+          </span>
+        ) : selectedAddress ? (
+          <span className="truncate">{selectedAddress}</span>
+        ) : (
+          <span className="text-gray-500">No location selected</span>
         )}
       </div>
 
-      {/* Error */}
+      {/* 🔘 Actions */}
+      <div className="flex gap-3">
+        <Button
+          onClick={getLocation}
+          className="flex-1 "
+          size="sm"
+          variant={"outline"}
+        >
+          <MapPin className="h-4 w-4" />
+          Use my location
+        </Button>
+
+        <Button
+          onClick={() => setIsMapOpen(true)}
+          size="sm"
+          variant="outline"
+          className="flex-1"
+        >
+          <Map className="h-4 w-4" />
+          Pick on map
+        </Button>
+      </div>
+
+      {/* ❌ Error */}
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );

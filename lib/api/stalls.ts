@@ -1,4 +1,4 @@
-import { MapBounds, StallsResponse } from "@/types/stalls";
+import { CreateStall, MapBounds, StallsResponse } from "@/types/stalls";
 import axiosClient from "../axios";
 
 export async function getStallsInBounds(
@@ -33,11 +33,22 @@ export async function fetchStallById(id: string) {
   const { data } = await axiosClient.get(`/stalls/${id}`);
   return data.stall;
 }
+// fetch stall photos
 export async function fetchStallPhotos(id: string) {
   const { data } = await axiosClient.get(`/stalls/${id}/photos`);
   return data.photos;
 }
+// fetch stall checkins
 export async function fetchStallCheckins(id: string) {
   const { data } = await axiosClient.get(`/stalls/${id}/checkin`);
   return data.checkins;
+}
+
+// create stall
+export async function createStall(formData: CreateStall) {
+  console.log("create stall formData", formData);
+
+  const { data } = await axiosClient.post("/stalls", formData);
+  console.log("crate stall data", data);
+  return data;
 }

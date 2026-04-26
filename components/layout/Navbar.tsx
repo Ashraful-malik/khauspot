@@ -4,6 +4,13 @@ import Container from "./Container";
 import { CirclePlus, History, House, MapPinned } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUp,
+  UserButton,
+} from "@clerk/nextjs";
 
 const navItems = [
   { title: "Home", href: "/", icon: House },
@@ -38,11 +45,22 @@ export default function Navbar({ className }: { className?: string }) {
               return <NavLink key={item.href} {...item} isActive={isActive} />;
             })}
           </div>
-          {/* use icon */}
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          {/* if not logged in  */}
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="bg-secondary text-white px-4 py-2 rounded-lg">
+                Login
+              </button>
+            </SignInButton>
+          </SignedOut>
+
+          {/* if logged in */}
+          <SignedIn>
+            <div className="scale-125">
+              <UserButton />
+            </div>
+          </SignedIn>
+          {/* signup  */}
         </div>
       </Container>
     </nav>

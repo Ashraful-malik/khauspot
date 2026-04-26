@@ -26,6 +26,7 @@ export function useStall(id?: string) {
   });
 }
 
+// fetch stall photos
 export function useStallPhotos(id?: string) {
   return useQuery({
     queryKey: ["stall-photos", id],
@@ -35,6 +36,7 @@ export function useStallPhotos(id?: string) {
   });
 }
 
+// fetch stall checkins
 export function useStallCheckins(id: string) {
   return useQuery({
     queryKey: ["stall-checkins", id],

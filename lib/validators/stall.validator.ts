@@ -6,14 +6,14 @@ export const createStallSchema = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(80, "Name too long"),
 
-  address: z.string().max(200).optional(),
+  address: z.string().max(200),
 
-  coordinates: z.array(z.number()).length(2, "Coordinates must be [lng, lat]"),
-
+  coordinates: z.tuple([z.number(), z.number()]),
   photos: z
     .array(
       z.object({
         url: z.url(),
+        publicId: z.string(),
       }),
     )
     .min(1, "At least one photo required"),
@@ -30,6 +30,7 @@ export const createStallSchema = z.object({
     "other",
   ]),
 });
+export type StallInput = z.infer<typeof createStallSchema>;
 
 export const updateStallSchema = z.object({
   name: z
