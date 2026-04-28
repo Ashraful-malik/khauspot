@@ -10,6 +10,7 @@ import { LocateFixed, LocateOff, Plus } from "lucide-react";
 import CardSkeleton from "@/components/skelaton/CardSkeleton";
 import MapLoader from "@/components/skelaton/MapLoader";
 import { calculateDistance } from "@/lib/utils/distance";
+import Link from "next/link";
 
 const StallMap = dynamic(() => import("@/components/map/StallMap"), {
   ssr: false,
@@ -215,8 +216,10 @@ export default function Page() {
                 </p>
 
                 <div className="flex gap-3">
-                  <Button>
-                    <Plus /> Add Stall
+                  <Button asChild>
+                    <Link href="/add">
+                      <Plus /> Add Stall
+                    </Link>
                   </Button>
 
                   <Button variant="outline" onClick={handleUseMyLocation}>

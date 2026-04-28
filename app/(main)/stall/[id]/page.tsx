@@ -41,6 +41,8 @@ export default function Stall() {
 
   // stall details
   const { data, isLoading } = useStall(id);
+  console.log("data", data);
+
   // stall images
   const { data: stallImages, isLoading: stallImagesLoading } =
     useStallPhotos(id);

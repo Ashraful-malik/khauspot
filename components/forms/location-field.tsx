@@ -25,11 +25,7 @@ export default function LocationField({ setLocation }: LocationFieldProps) {
 
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState<{
-    lat: number;
-    lng: number;
-    address: string;
-  } | null>(null);
+
   // Sync auto location
   useEffect(() => {
     if (location) {
@@ -39,7 +35,6 @@ export default function LocationField({ setLocation }: LocationFieldProps) {
         address: location.address,
       };
       setSelectedAddress(location.address);
-      setSelectedLocation(newLocation);
       setLocation(newLocation);
     }
   }, [location, setLocation]);
@@ -52,6 +47,7 @@ export default function LocationField({ setLocation }: LocationFieldProps) {
           onClose={() => setIsMapOpen(false)}
           onSelect={async (coords) => {
             setIsMapOpen(false);
+            console.log("coords from map selection=-===>", coords);
 
             // 🔥 reverse geocoding
             const res = await fetch(
@@ -68,7 +64,6 @@ export default function LocationField({ setLocation }: LocationFieldProps) {
             };
 
             setSelectedAddress(address);
-            setSelectedLocation(newLocation);
             setLocation(newLocation);
           }}
         />
@@ -82,7 +77,7 @@ export default function LocationField({ setLocation }: LocationFieldProps) {
             Detecting location...
           </span>
         ) : selectedAddress ? (
-          <span className="truncate">{selectedAddress}</span>
+          <span className="block w-full truncate">{selectedAddress}</span>
         ) : (
           <span className="text-gray-500">No location selected</span>
         )}

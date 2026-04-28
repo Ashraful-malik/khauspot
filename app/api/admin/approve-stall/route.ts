@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
 
     await connectDb();
     const body = await req.json();
-    const { suggestionId } = body;
-    if (!suggestionId) {
+    const { stallId } = body;
+    if (!stallId) {
       return NextResponse.json(
         { error: "Missing suggestion id" },
         { status: 400 },
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "User not active" }, { status: 404 });
     }
 
-    const userSuggestedStalls = await SuggestedStall.findById(suggestionId);
+    const userSuggestedStalls = await SuggestedStall.findById(stallId);
     console.log("suggestedStall ===>", userSuggestedStalls);
 
     if (!userSuggestedStalls || userSuggestedStalls.status !== "pending") {

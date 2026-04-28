@@ -61,6 +61,9 @@ const suggestedStallSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    address: {
+      type: String,
+    },
   },
   { timestamps: true },
 );

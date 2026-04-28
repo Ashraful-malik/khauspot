@@ -11,18 +11,9 @@ import {
   Circle,
 } from "react-leaflet";
 import L from "leaflet";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { useClusters } from "@/hooks/useCluster";
 import { SetCoords, StallMapProps } from "@/types/map";
 import { useMapEventsHandler } from "@/hooks/useMapEventsHandler";
-
-const DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function StallMap({
   setMapCenter,

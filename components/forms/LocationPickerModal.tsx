@@ -2,6 +2,7 @@
 import { DEFAULT_LOCATION } from "@/app/(main)/(map)/map/page";
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { Button } from "../ui/button";
 
 type LocationPickerModalProps = {
   onClose: () => void;
@@ -48,12 +49,7 @@ function LocationPickerModal({ onClose, onSelect }: LocationPickerModalProps) {
         </div>
 
         <div className="p-3 border-t flex justify-end">
-          <button
-            className="bg-blue-600 text-white px-4 py-1 rounded"
-            onClick={() => onSelect(position)}
-          >
-            Confirm
-          </button>
+          <Button onClick={() => onSelect(position)}>Confirm</Button>
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      // await rateLimit(userId, "createStall", 5, 3600); // 5 requests per hour
+      await rateLimit(userId, "createStall", 5, 3600); // 5 requests per hour
     } catch (error) {
       return NextResponse.json(
         { error: "Too many stalls created. Try later." },

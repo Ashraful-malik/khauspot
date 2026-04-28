@@ -6,7 +6,7 @@ import ImageUploader, {
 } from "@/components/shared/image-uploader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCreateStall } from "@/hooks/tanstack/useCreateStall";
+import { useSuggestStall } from "@/hooks/tanstack/useCreateStall";
 import { STALL_CATEGORIES } from "@/lib/constants";
 import { createStallSchema } from "@/lib/validators/stall.validator";
 import { useState } from "react";
@@ -25,6 +25,7 @@ export default function SuggestStall() {
   const [stallAddress, setStallAddress] = useState<
     StallAddressType | undefined
   >();
+  console.log("stallAddress", stallAddress);
   const [stallImages, setStallImages] = useState<UploadedImageType[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -32,7 +33,8 @@ export default function SuggestStall() {
     ? STALL_CATEGORIES
     : STALL_CATEGORIES.slice(0, 3);
 
-  const { mutate, isPending } = useCreateStall();
+  // create stall mutation
+  const { mutate, isPending } = useSuggestStall();
 
   const handleSubmit = () => {
     if (!stallAddress) {
@@ -41,6 +43,7 @@ export default function SuggestStall() {
     }
 
     const coordinates: [number, number] = [stallAddress.lat, stallAddress.lng];
+    console.log("coordinates in submit", coordinates);
     const result = createStallSchema.safeParse({
       name,
       category,
@@ -61,8 +64,7 @@ export default function SuggestStall() {
         setStallImages([]);
       },
       onError(error) {
-        console.log("form submission error", error);
-        toast.error("Something went wrong");
+        toast.error(error.message);
       },
     });
   };

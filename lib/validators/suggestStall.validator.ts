@@ -5,6 +5,27 @@ export const suggestedStallSchema = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(80, "Name too long"),
+
+  address: z.string().max(200),
+
+  coordinates: z.tuple([z.number(), z.number()]),
+
+  location: z
+    .object({
+      type: z.string(),
+      coordinates: z.tuple([z.number(), z.number()]),
+    })
+    .optional(),
+
+  photos: z
+    .array(
+      z.object({
+        url: z.url(),
+        publicId: z.string(),
+      }),
+    )
+    .min(1, "At least one photo required"),
+
   category: z.enum([
     "chai",
     "chaat",
@@ -16,13 +37,8 @@ export const suggestedStallSchema = z.object({
     "sweets_desserts",
     "other",
   ]),
-  coordinates: z.array(z.number()).length(2, "Coordinates must be [lng, lat]"),
-  photos: z
-    .array(
-      z.object({
-        url: z.url(),
-        publicId: z.string().optional(),
-      }),
-    )
-    .optional(),
+  createdAt: z.string().optional(),
+  _id: z.string().optional(),
 });
+
+export type SuggestedStall = z.infer<typeof suggestedStallSchema>;

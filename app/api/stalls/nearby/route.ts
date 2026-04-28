@@ -36,6 +36,11 @@ export async function GET(req: NextRequest) {
         },
       },
       {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
         $project: {
           name: 1,
           location: 1,

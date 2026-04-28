@@ -15,8 +15,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const body = await validateBody(req, suggestedStallSchema);
-    const { name, category, coordinates, photos } = body;
-    const [lng, lat] = coordinates;
+    const { name, category, coordinates, photos, address } = body;
+    const [lat, lng] = coordinates;
+    console.log("coordinates from backend", coordinates);
     await connectDb();
 
     const user = await User.findOne({ clerkId: userId });
@@ -100,6 +101,7 @@ export async function POST(req: NextRequest) {
       photos: photos ?? [],
       suggestedBy: user._id,
       status: "pending",
+      address,
     });
     return NextResponse.json(
       { message: "Suggestion submitted" },

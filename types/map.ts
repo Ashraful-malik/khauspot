@@ -5,6 +5,8 @@ export type Coords = {
 };
 
 export type SetCoords = React.Dispatch<React.SetStateAction<Coords | null>>;
+
+// types for StallMap
 export type StallMapProps = {
   setMapCenter: React.Dispatch<React.SetStateAction<Coords | null>>;
   nearbyCoords: {

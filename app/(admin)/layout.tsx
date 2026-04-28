@@ -31,7 +31,6 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="flex-1 flex flex-col">
         {/* Topbar */}
         <AdminHeader onNavigate={() => setOpen(true)} />
-
         {/* Content */}
         <main className="flex-1 overflow-auto">{children}</main>
       </div>

@@ -20,9 +20,9 @@ export async function POST(req: NextRequest) {
     }
     await connectDb();
     const body = await req.json();
-    const { suggestionId, adminNote } = body;
+    const { stallId, adminNote } = body;
 
-    if (!suggestionId) {
+    if (!stallId) {
       return NextResponse.json(
         { error: "Suggestion ID required" },
         { status: 400 },
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const rejectedStall = await SuggestedStall.findOneAndUpdate(
       {
-        _id: suggestionId,
+        _id: stallId,
         status: "pending",
       },
       {

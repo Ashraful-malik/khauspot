@@ -2,113 +2,32 @@
 
 import PageWrapper from "@/components/layout/PageWrapper";
 import { ActivityItemCard } from "@/components/shared/activity-item-card";
+import ActivityCardSkeleton from "@/components/skelaton/ActivityCardSkeleton";
+import { useGetActivities } from "@/hooks/tanstack/useGetActivities";
 
 export default function ActivityPage() {
-  const activities = [
-    {
-      id: 1,
-      type: "checkin",
-      user: "Rahul",
-      stall: "Sharma Chai",
-      comment: "Best chai in town",
-      time: "2 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=580&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 2,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 3,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 4,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 5,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 6,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 7,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 8,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 9,
-      type: "suggest",
-      user: "Priya",
-      stall: "Station Momos",
-      comment: "",
-      time: "10 min ago",
-      avatar:
-        "https://images.unsplash.com/photo-1558486012-817176f84c6d?q=80&w=370&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-  ];
+  const { data: activities, isLoading } = useGetActivities();
 
   return (
-    <PageWrapper className="max-w-6xl mx-auto overflow-y-auto custom-scrollbar">
+    <PageWrapper className="max-w-6xl mx-auto overflow-y-auto custom-scrollbar ">
       <div className="px-4 py-4 space-y-4 mb-24 md:mb-0">
         {/* Header */}
         <h1 className="text-lg font-semibold">Activity</h1>
 
         {/* Feed */}
         <div className="space-y-3">
-          {activities.length === 0 && <ActivityEmptyState />}
-          {activities.map((item) => (
-            <ActivityItemCard key={item.id} {...item} />
-          ))}
+          {isLoading ? (
+            //show skeleton
+            Array.from({ length: 5 }).map((_, idx) => (
+              <ActivityCardSkeleton key={idx} />
+            ))
+          ) : activities?.length === 0 ? (
+            <ActivityEmptyState />
+          ) : (
+            activities?.map((item: any) => (
+              <ActivityItemCard key={item._id} activities={item} />
+            ))
+          )}
         </div>
       </div>
     </PageWrapper>

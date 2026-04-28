@@ -39,12 +39,6 @@ export async function GET(req: NextResponse) {
       .limit(limit)
       .lean();
 
-    if (!suggestions || suggestions.length === 0) {
-      return NextResponse.json(
-        { error: "No pending suggestions found" },
-        { status: 404 },
-      );
-    }
     const totalSuggestions = await SuggestedStall.countDocuments({
       status: "pending",
     });
