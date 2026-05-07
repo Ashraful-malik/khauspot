@@ -34,8 +34,10 @@ export async function POST(
     await connectDb();
     const { stallId } = await params;
     const data = await validateBody(req, createCheckInSchema);
-    const { coordinates, comment, accuracy } = data;
-    const [lng, lat] = coordinates;
+    console.log(data);
+    const { coordinates, accuracy } = data;
+    const [lat, lng] = coordinates;
+    console.log("coordinates", coordinates);
 
     if (accuracy > BAD_ACCURACY) {
       return NextResponse.json(
@@ -64,7 +66,7 @@ export async function POST(
 
     if (!stall) {
       return NextResponse.json(
-        { error: "Stall not found or you are too far from the stall" },
+        { error: "You are too far from the stall to check in" },
         { status: 403 },
       );
     }
@@ -72,10 +74,9 @@ export async function POST(
     // prevent multiple checkins per day
 
     // create check-in
-    await Checkin.create({
+    const checkin = await Checkin.create({
       stallId,
       userId: user._id,
-      comment: comment,
       location: {
         type: "Point",
         coordinates: [lng, lat],
@@ -91,10 +92,13 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({
-      success: true,
-      message: "Check-in successful",
-    });
+    return NextResponse.json(
+      { data: { id: checkin._id } },
+
+      {
+        status: 201,
+      },
+    );
   } catch (error: unknown) {
     console.error(error);
     if (error instanceof MongoServerError && error.code === 11000) {

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import axios from "axios";
 
-type LocationType = {
+export type LocationType = {
   lat: number;
   lng: number;
-  address: string;
+  address?: string;
+  accuracy?: number;
 };
 export function useUserLocation() {
   const [location, setLocation] = useState<LocationType | null>(null);
@@ -26,36 +27,46 @@ export function useUserLocation() {
   };
 
   // get user location + reverse geocoding
-  const getLocation = async () => {
+  const getLocation = async (withAddress = true) => {
     setLoading(true);
     setError("");
+    let address = "";
     try {
       const position = await new Promise<GeolocationPosition>(
         (resolve, reject) => {
           navigator.geolocation.getCurrentPosition(resolve, reject, {
             timeout: 5000, // 5 seconds
+            enableHighAccuracy: true,
+            maximumAge: 0,
           });
         },
       );
       const lat = position.coords.latitude;
       const lng = position.coords.longitude;
-      const res = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse`,
-        {
-          params: {
-            lat,
-            lon: lng,
-            format: "json",
+      const accuracy = position.coords.accuracy;
+
+      if (withAddress) {
+        const res = await axios.get(
+          `https://nominatim.openstreetmap.org/reverse`,
+          {
+            params: {
+              lat,
+              lon: lng,
+              format: "json",
+            },
+            headers: {
+              "Accept-Language": "en",
+            },
           },
-          headers: {
-            "Accept-Language": "en",
-          },
-        },
-      );
-      const address = formatAddress(res.data);
+        );
+        address = formatAddress(res.data);
+      }
+      // get address from lat lng
+
       setLocation({
         lat,
         lng,
+        accuracy,
         address,
       });
     } catch (err: any) {

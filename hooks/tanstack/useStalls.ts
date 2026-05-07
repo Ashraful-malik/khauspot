@@ -1,11 +1,17 @@
 import {
+  checkInPayload,
+  commentPayload,
+  createCheckInApi,
+  createCheckInCommentApi,
+} from "@/lib/api/checkin";
+import {
   fetchStallById,
   fetchStallCheckins,
   fetchStallPhotos,
   getStallsInBounds,
 } from "@/lib/api/stalls";
 import { MapBounds } from "@/types/stalls";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useStalls(bounds: MapBounds | null) {
   return useQuery({
@@ -42,5 +48,27 @@ export function useStallCheckins(id: string) {
     queryKey: ["stall-checkins", id],
     queryFn: () => fetchStallCheckins(id),
     enabled: !!id,
+  });
+}
+
+// crate checkins stall
+export function useCreateCheckIn() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: checkInPayload) => createCheckInApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["stall-checkins"] });
+    },
+  });
+}
+
+// crate checkin comment
+export function useCreateCheckInComment() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: commentPayload) => createCheckInCommentApi(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["stall-checkins"] });
+    },
   });
 }

@@ -3,19 +3,19 @@ import { DEFAULT_LOCATION } from "@/app/(main)/(map)/map/page";
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { Button } from "../ui/button";
+import { GoToUserButton } from "../map/GettouserButton";
 
 type LocationPickerModalProps = {
   onClose: () => void;
   onSelect: (coords: { lat: number; lng: number }) => void;
+  initialPosition: { lat: number; lng: number };
 };
-function LocationPickerModal({ onClose, onSelect }: LocationPickerModalProps) {
-  const userCoords = localStorage.getItem("userCoords");
-  const userLatLng = JSON.parse(userCoords!);
-
-  const [position, setPosition] = useState({
-    lat: userLatLng.lat || DEFAULT_LOCATION.lat,
-    lng: userLatLng.lng || DEFAULT_LOCATION.lng,
-  });
+function LocationPickerModal({
+  onClose,
+  onSelect,
+  initialPosition,
+}: LocationPickerModalProps) {
+  const [position, setPosition] = useState(initialPosition);
   function MapClickHandler() {
     useMapEvents({
       click(e) {
@@ -44,6 +44,7 @@ function LocationPickerModal({ onClose, onSelect }: LocationPickerModalProps) {
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <MapClickHandler />
+            <GoToUserButton setPosition={setPosition} />
             <Marker position={[position.lat, position.lng]} />
           </MapContainer>
         </div>

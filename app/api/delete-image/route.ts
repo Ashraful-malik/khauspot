@@ -7,9 +7,9 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 export async function POST(req: Request) {
-  const { public_id } = await req.json();
-  console.log("public_id", public_id);
-  await cloudinary.uploader.destroy(public_id);
+  const { publicId } = await req.json();
+  console.log("public_id", publicId);
+  await cloudinary.uploader.destroy(publicId);
   return NextResponse.json({
     message: "Image deleted",
     success: true,

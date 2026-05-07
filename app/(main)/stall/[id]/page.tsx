@@ -2,6 +2,7 @@
 
 import PageWrapper from "@/components/layout/PageWrapper";
 import BackButton from "@/components/shared/back-button";
+import CommentModal from "@/components/shared/comment-model";
 import RecentCheckinCard, {
   recentCheckinCardProps,
 } from "@/components/shared/recent-checkins-card";
@@ -9,49 +10,44 @@ import StallCheckinsSkeleton from "@/components/skelaton/StallCheckinsSkeleton";
 import StallDetailsSkeleton from "@/components/skelaton/StallDetailsSkeleton";
 import { Button } from "@/components/ui/button";
 import {
+  useCreateCheckIn,
+  useCreateCheckInComment,
   useStall,
   useStallCheckins,
   useStallPhotos,
 } from "@/hooks/tanstack/useStalls";
-import { googlemapNavigate } from "@/lib/googlemap";
+import { LocationType, useUserLocation } from "@/hooks/useUserLocation";
+import { googleMapNavigate } from "@/lib/googlemap";
 import { calculateDistance, formatDistance } from "@/lib/utils/distance";
 import { CircleCheck, Navigation } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Stall() {
   const [currentImage, setCurrentImage] = useState(0);
-  const [isCheckIn, setIsCheckIn] = useState(false);
-  const [openModel, setOpenModel] = useState(false);
-  const [userCoords, setUserCoords] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
+  const [isChecking, setIsChecking] = useState(false);
+
+  // comment model
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [lastCheckinId, setLastCheckinId] = useState<string | null>(null);
 
   const { id } = useParams<{ id: string }>();
+  const { location, loading, getLocation } = useUserLocation();
 
-  // load user coords
-  useEffect(() => {
-    const stored = localStorage.getItem("useCoords");
-    if (stored) {
-      setUserCoords(JSON.parse(stored) as { lat: number; lng: number });
-    }
-  }, []);
-
-  // stall details
+  // get stall details
   const { data, isLoading } = useStall(id);
-  console.log("data", data);
 
-  // stall images
+  // get stall images
   const { data: stallImages, isLoading: stallImagesLoading } =
     useStallPhotos(id);
 
-  // stall checkins
+  // get stall checkins
   const { data: CheckinsActivity, isLoading: isLoadingCheckinsActivity } =
     useStallCheckins(id);
 
-  // load stall images
+  // preload next image
   useEffect(() => {
     if (stallImages && currentImage >= stallImages.length) {
       setCurrentImage(0);
@@ -66,23 +62,120 @@ export default function Stall() {
     img.src = stallImages[nextIndex]?.url;
   }, [currentImage, stallImages]);
 
-  const userLat = userCoords?.lat;
-  const userLng = userCoords?.lng;
+  // stall location
   const coordinates = data?.location?.coordinates || [];
   const stallLng = coordinates[0];
   const stallLat = coordinates[1];
 
-  let distance = null;
-  if (userLat && userLng) {
-    distance = calculateDistance(
-      { lat: userLat, lng: userLng },
-      { lat: stallLat, lng: stallLng },
-    );
-  }
+  // distance
+  const distance =
+    location && stallLat !== undefined && stallLng !== undefined
+      ? calculateDistance(
+          { lat: location.lat, lng: location.lng },
+          { lat: stallLat, lng: stallLng },
+        )
+      : null;
 
-  // handle navigation to google maps
-  const handleNavigate = () => {
-    googlemapNavigate({ lat: stallLat, lng: stallLng });
+  // open google map for navigation
+  const handleNavigate = async () => {
+    googleMapNavigate({ lat: stallLat, lng: stallLng });
+  };
+
+  const { mutate, isPending: isCheckingPending } = useCreateCheckIn();
+
+  const processCheckIn = async (loc: LocationType) => {
+    try {
+      console.log("loc from frontend", loc);
+      const distance = calculateDistance(
+        {
+          lat: loc.lat,
+          lng: loc.lng,
+        },
+        { lat: stallLat, lng: stallLng },
+      );
+
+      // low accuracy
+      if (loc.accuracy && loc.accuracy > 100) {
+        toast.error("Low GPS accuracy. Please enable GPS.");
+        return;
+      }
+
+      // Too far
+      if (distance > 50) {
+        toast.error("You are too far to check in");
+        return;
+      }
+
+      // mutating checkin
+      mutate(
+        {
+          stallId: id,
+          coordinates: [loc.lat, loc.lng],
+
+          accuracy: loc.accuracy,
+        },
+        {
+          onSuccess: (response) => {
+            console.log("backend log checkins", data);
+            toast.success("Check-in successful");
+            const {
+              data: { id },
+            } = response;
+            setLastCheckinId(id);
+            setShowCommentModal(true);
+          },
+          onError: (error) => {
+            toast.error(error.message);
+          },
+        },
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  //fetch user location
+  useEffect(() => {
+    getLocation(false);
+  }, []);
+  // handle checkin
+  const handleCheckIn = async () => {
+    setIsChecking(true);
+    await getLocation(false);
+  };
+
+  useEffect(() => {
+    if (!location || !isChecking) return;
+    processCheckIn(location);
+    setIsChecking(false);
+  }, [location, isChecking]);
+
+  // adding comment
+  const { mutate: createCheckInComment } = useCreateCheckInComment();
+  const handleCommentSubmit = async (comment: string) => {
+    if (!comment.trim() || !lastCheckinId) return;
+
+    try {
+      await createCheckInComment(
+        {
+          stallId: id,
+          comment,
+          checkinId: lastCheckinId,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Comment added!");
+          },
+          onError: (error) => {
+            toast.error(error.message || "Failed to add comment");
+          },
+        },
+      );
+    } catch {
+      toast.error("Failed to save comment");
+    }
   };
 
   return (
@@ -137,7 +230,8 @@ export default function Stall() {
                 {data?.name}
               </h1>
               <p className="text-sm text-muted-foreground">
-                {data.category} • {formatDistance(distance)}
+                {data.category}{" "}
+                {distance != null && <> • {formatDistance(distance)}</>}
               </p>
 
               <p className="text-sm text-subtle-foreground pt-2">
@@ -152,10 +246,17 @@ export default function Stall() {
             <div className="flex gap-3">
               <Button
                 className="flex-1 bg-[#FF6B35] text-white"
-                onClick={() => setOpenModel(true)}
+                onClick={handleCheckIn}
+                disabled={loading || isCheckingPending || !location}
               >
-                <CircleCheck className="mr-2 h-4 w-4" />
-                Check In
+                {loading ? (
+                  "Getting location..."
+                ) : (
+                  <>
+                    <CircleCheck className="mr-2 h-4 w-4" />
+                    Check In
+                  </>
+                )}
               </Button>
 
               <Button
@@ -190,6 +291,12 @@ export default function Stall() {
           )}
         </div>
       </div>
+      {/* comment model */}
+      <CommentModal
+        open={showCommentModal}
+        onClose={() => setShowCommentModal(false)}
+        onSubmit={handleCommentSubmit}
+      />
     </PageWrapper>
   );
 }

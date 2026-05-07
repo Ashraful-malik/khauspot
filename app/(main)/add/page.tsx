@@ -37,7 +37,7 @@ export default function SuggestStall() {
   const { mutate, isPending } = useSuggestStall();
 
   const handleSubmit = () => {
-    if (!stallAddress) {
+    if (!stallAddress || !stallAddress.address) {
       toast.error("Location is required");
       return;
     }
@@ -87,8 +87,9 @@ export default function SuggestStall() {
         {/* Location (Auto) */}
         <div>
           <p className="text-sm text-foreground mb-2">Location</p>
-          <LocationField setLocation={setStallAddress} />
+          <LocationField setLocation={setStallAddress} value={stallAddress} />
         </div>
+
         {/* Category Pills (FAST selection) */}
         <div>
           <p className="text-sm text-foreground mb-2">Select category</p>
@@ -138,6 +139,7 @@ export default function SuggestStall() {
           <ImageUploader
             onChange={(uploadedImages) => setStallImages(uploadedImages)}
             onUploadingChange={setIsUploading}
+            value={stallImages}
           />
         </div>
       </div>

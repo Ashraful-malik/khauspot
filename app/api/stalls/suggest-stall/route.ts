@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
     const body = await validateBody(req, suggestedStallSchema);
     const { name, category, coordinates, photos, address } = body;
     const [lat, lng] = coordinates;
-    console.log("coordinates from backend", coordinates);
     await connectDb();
 
     const user = await User.findOne({ clerkId: userId });

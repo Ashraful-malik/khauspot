@@ -21,9 +21,9 @@ export function toRad(value: number) {
 }
 
 export function formatDistance(distance: number | null) {
-  if (!distance) return null;
+  if (distance === null || distance === undefined) return null;
 
-  if (distance < 0.05) return "Very close";
+  if (distance < 0.05) return "Near you";
   if (distance < 0.5) return `${Math.round(distance * 1000)} m away`;
   if (distance < 5) return `${distance.toFixed(1)} km away`;
 

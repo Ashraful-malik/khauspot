@@ -1,6 +1,6 @@
 "use client";
+import { deleteImage } from "@/lib/api/image";
 import { uploadImage } from "@/lib/uploadToCloudinary";
-import axios from "axios";
 import { UploadCloud } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -19,10 +19,10 @@ export type UploadedImageType = {
 type Props = {
   onChange: (images: UploadedImageType[]) => void;
   onUploadingChange?: (uploading: boolean) => void;
+  value?: UploadedImageType[];
 };
-function ImageUploader({ onChange, onUploadingChange }: Props) {
+function ImageUploader({ onChange, onUploadingChange, value }: Props) {
   const [images, setImages] = useState<ImageItemsType[]>([]);
-
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
@@ -63,8 +63,10 @@ function ImageUploader({ onChange, onUploadingChange }: Props) {
             : img,
         ),
       );
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Fail to upload image";
+      toast.error(message);
       setImages((prev) =>
         prev.map((img) =>
           img.id === item.id ? { ...img, status: "error" } : img,
@@ -81,7 +83,8 @@ function ImageUploader({ onChange, onUploadingChange }: Props) {
     const img = images.find((i) => i.id === id);
     if (img?.publicId) {
       try {
-        await axios.post("/api/delete-image", { publicid: img.publicId });
+        deleteImage({ publicId: img.publicId });
+        // await axios.post("/api/delete-image", { publicId: img.publicId });
       } catch (error) {
         console.log("Fail to delete from cloudinary", error);
       }
@@ -112,8 +115,11 @@ function ImageUploader({ onChange, onUploadingChange }: Props) {
         publicId: img.publicId,
       }));
 
-    onChange(uploadedImages);
+    if (JSON.stringify(uploadedImages) !== JSON.stringify(value)) {
+      onChange(uploadedImages);
+    }
   }, [images]);
+
   useEffect(() => {
     const uploading = images.some(
       (img) => img.status === "uploading" || img.status === "deleting",
@@ -121,6 +127,24 @@ function ImageUploader({ onChange, onUploadingChange }: Props) {
     onUploadingChange?.(uploading);
   }, [images]);
 
+  // sinc image and reset values
+  useEffect(() => {
+    if (!value || value.length === 0) {
+      setImages([]);
+      return;
+    }
+
+    const mapped: ImageItemsType[] = value.map((img) => ({
+      id: crypto.randomUUID(),
+      file: {} as File, // dummy (not needed after upload)
+      preview: img.url, // use URL as preview
+      url: img.url,
+      publicId: img.publicId,
+      status: "success",
+    }));
+
+    setImages(mapped);
+  }, [value]);
   return (
     <div className="space-y-4">
       {/* Upload Box */}

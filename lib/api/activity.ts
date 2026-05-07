@@ -1,8 +1,13 @@
-import axiosClient from "../axios";
+import axiosClient, { parseAxiosError } from "../axios";
 
 // get all activities
 export async function getActivities() {
-  const { data } = await axiosClient.get("/activity");
-  console.log("activities data", data);
-  return data;
+  try {
+    const { data } = await axiosClient.get("/activity");
+    console.log("activities data", data);
+    return data;
+  } catch (error) {
+    const parsed = parseAxiosError(error);
+    throw parsed;
+  }
 }
