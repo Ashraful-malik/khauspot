@@ -1,16 +1,10 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import Container from "./Container";
 import { CirclePlus, History, House, MapPinned } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUp,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 const navItems = [
   { title: "Home", href: "/", icon: House },
@@ -31,7 +25,16 @@ export default function Navbar({ className }: { className?: string }) {
     >
       <Container className="flex items-center justify-between h-full">
         {/* Logo */}
-        <div className="text-xl font-semibold tracking-tight">StreetFood</div>
+        <Link href="/" aria-label="KhauSpot home" className="shrink-0">
+          <Image
+            src="/logo.svg"
+            alt="KhauSpot"
+            width={188}
+            height={48}
+            priority
+            className="h-10 w-auto"
+          />
+        </Link>
 
         {/* Nav Links */}
         <div className="flex items-center  gap-4">
@@ -70,7 +73,7 @@ export default function Navbar({ className }: { className?: string }) {
 type NavItemProps = {
   title: string;
   href: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
   isActive: boolean;
 };
 function NavLink({ title, href, icon: Icon, isActive }: NavItemProps) {
