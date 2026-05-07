@@ -5,6 +5,7 @@ import { createCheckInSchema } from "@/lib/validators/checkIn.validator";
 import Checkin from "@/models/CheckIns";
 import Stall from "@/models/Stall";
 import User from "@/models/User";
+import { StallParams } from "@/types/api";
 import { auth } from "@clerk/nextjs/server";
 import { MongoServerError } from "mongodb";
 import mongoose from "mongoose";
@@ -13,7 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Create Checkin
 export async function POST(
   req: NextRequest,
-  { params }: { params: { stallId: string } },
+  { params }: { params: StallParams },
 ) {
   try {
     const BAD_ACCURACY = 30;
@@ -114,7 +115,7 @@ export async function POST(
 // get checkins of a particular stall
 export async function GET(
   req: NextRequest,
-  { params }: { params: { stallId: string } },
+  { params }: { params: StallParams },
 ) {
   try {
     await connectDb();

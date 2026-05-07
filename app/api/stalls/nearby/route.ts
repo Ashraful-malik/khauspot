@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
           totalReviews: 1,
           isVerified: 1,
           checkinCount: 1,
-          distance: 1, // 👈 include distance
+          distance: 1,
         },
       },
       { $limit: 20 },

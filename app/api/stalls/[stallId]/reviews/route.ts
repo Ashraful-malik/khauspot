@@ -10,12 +10,10 @@ import { MongoServerError } from "mongodb";
 import { reviewsSchema } from "@/lib/validators/review.validator";
 import { validateBody } from "@/lib/validate";
 import { rateLimit } from "@/lib/ratelimit";
+import { StallParams } from "@/types/api";
 
 // Add Review
-export async function POST(
-  req: Request,
-  { params }: { params: { stallId: string } },
-) {
+export async function POST(req: Request, { params }: { params: StallParams }) {
   try {
     const { userId } = await auth();
     if (!userId) {
@@ -90,7 +88,7 @@ export async function POST(
 // Get Reviews
 export async function GET(
   req: NextRequest,
-  { params }: { params: { stallId: string } },
+  { params }: { params: StallParams },
 ) {
   try {
     const { stallId } = await params;

@@ -1,5 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
+type sessionClaimsWithRole = {
+  metadata?: {
+    role?: string;
+  };
+};
+
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
@@ -10,7 +16,7 @@ export default clerkMiddleware(async (auth, req) => {
   if (!userId) {
     return redirectToSignIn();
   }
-  const role = sessionClaims?.metadata?.role;
+  const role = (sessionClaims as sessionClaimsWithRole)?.metadata?.role;
 
   if (role !== "admin") {
     return new Response("forbidden", { status: 403 });

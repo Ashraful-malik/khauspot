@@ -46,12 +46,13 @@ export default function LocationField({
 
   // Sync auto location
   useEffect(() => {
-    if (location) {
+    if (location?.address) {
       const newLocation = {
         lat: location.lat,
         lng: location.lng,
         address: location.address,
       };
+
       setAddress(location.address);
       setLocation(newLocation);
     }
@@ -177,7 +178,7 @@ export default function LocationField({
       {/* 🔘 Actions */}
       <div className="flex gap-3">
         <Button
-          onClick={getLocation}
+          onClick={() => getLocation()}
           className="flex-1 "
           size="sm"
           variant={"outline"}

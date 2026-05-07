@@ -9,11 +9,12 @@ import { MongoServerError } from "mongodb";
 import { reportSchema } from "@/lib/validators/report.validator";
 import { validateBody } from "@/lib/validate";
 import { rateLimit } from "@/lib/ratelimit";
+import { StallParams } from "@/types/api";
 
 // Report Stall and soft delete
 export async function POST(
   req: NextRequest,
-  { params }: { params: { stallId: string } },
+  { params }: { params: StallParams },
 ) {
   try {
     const REPORT_COUNT = 3;

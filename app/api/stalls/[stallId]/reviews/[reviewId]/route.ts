@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 // Update Review
 export async function PATCH(
   req: Request,
-  { params }: { params: { stallId: string; reviewId: string } },
+  { params }: { params: Promise<{ stallId: string; reviewId: string }> },
 ) {
   try {
     const { userId } = await auth();
@@ -59,7 +59,7 @@ export async function PATCH(
 // Delete Review
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { reviewId: string; stallId: string } },
+  { params }: { params: Promise<{ reviewId: string; stallId: string }> },
 ) {
   try {
     const { userId } = await auth();
