@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useSuggestStall } from "@/hooks/tanstack/useCreateStall";
 import { STALL_CATEGORIES } from "@/lib/constants";
 import { createStallSchema } from "@/lib/validators/stall.validator";
+import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -18,6 +19,8 @@ type StallAddressType = {
   address: string;
 };
 export default function SuggestStall() {
+  // signed in user
+  const { isSignedIn } = useUser();
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
   const [showAll, setShowAll] = useState(false);
@@ -25,7 +28,6 @@ export default function SuggestStall() {
   const [stallAddress, setStallAddress] = useState<
     StallAddressType | undefined
   >();
-  console.log("stallAddress", stallAddress);
   const [stallImages, setStallImages] = useState<UploadedImageType[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -43,7 +45,6 @@ export default function SuggestStall() {
     }
 
     const coordinates: [number, number] = [stallAddress.lat, stallAddress.lng];
-    console.log("coordinates in submit", coordinates);
     const result = createStallSchema.safeParse({
       name,
       category,
@@ -124,7 +125,7 @@ export default function SuggestStall() {
         <Button
           className={`w-full bg-primary ${isUploading && "opacity-50"} text-white`}
           size="lg"
-          disabled={isPending || isUploading}
+          disabled={isPending || isUploading || !isSignedIn}
           onClick={handleSubmit}
         >
           {isPending ? "Submitting..." : "Submit Stall"}

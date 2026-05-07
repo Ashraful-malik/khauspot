@@ -12,7 +12,6 @@ export type recentCheckinCardProps = {
   type: string;
 };
 function RecentCheckinCard({ checkin }: { checkin: recentCheckinCardProps }) {
-  console.log(checkin);
   return (
     <div className="flex gap-3 items-start">
       <Image

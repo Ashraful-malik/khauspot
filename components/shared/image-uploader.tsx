@@ -1,6 +1,7 @@
 "use client";
 import { deleteImage } from "@/lib/api/image";
 import { uploadImage } from "@/lib/uploadToCloudinary";
+import { useUser } from "@clerk/nextjs";
 import { UploadCloud } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -23,6 +24,9 @@ type Props = {
 };
 function ImageUploader({ onChange, onUploadingChange, value }: Props) {
   const [images, setImages] = useState<ImageItemsType[]>([]);
+
+  // check for authentication
+  const { isSignedIn, isLoaded } = useUser();
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
@@ -84,9 +88,8 @@ function ImageUploader({ onChange, onUploadingChange, value }: Props) {
     if (img?.publicId) {
       try {
         deleteImage({ publicId: img.publicId });
-        // await axios.post("/api/delete-image", { publicId: img.publicId });
       } catch (error) {
-        console.log("Fail to delete from cloudinary", error);
+        toast.error("Fail to delete image");
       }
     }
 
@@ -159,6 +162,7 @@ function ImageUploader({ onChange, onUploadingChange, value }: Props) {
           type="file"
           accept="image/*"
           className="hidden"
+          disabled={!isSignedIn}
           multiple
           onChange={(e) => handleFiles(e.target.files)}
         />

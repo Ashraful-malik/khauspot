@@ -22,7 +22,6 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 
 function ProjectList({ suggestions }: { suggestions: SuggestedStall[] }) {
-  console.log("suggestions", suggestions);
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold mb-4">Pending Stall Suggestions</h1>

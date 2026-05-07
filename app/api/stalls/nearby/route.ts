@@ -10,7 +10,6 @@ export async function GET(req: NextRequest) {
     const lat = parseFloat(searchParams.get("lat") || "");
     const lng = parseFloat(searchParams.get("lng") || "");
     // const radius = parseInt(searchParams.get("radius") || "500");
-    console.log(lat, lng);
 
     if (isNaN(lat) || isNaN(lng)) {
       return NextResponse.json(
@@ -57,7 +56,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(stalls, { status: 200 });
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

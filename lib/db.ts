@@ -38,22 +38,15 @@ const connectDb = async () => {
       .then((mongooseInstance) => {
         isConnected = true;
 
-        mongoose.connection.on("connected", () => {
-          console.log("Connected to MongoDB");
-        });
-        mongoose.connection.on("error", (err) => {
-          console.log("MongoDB connection error", err);
-        });
-        mongoose.connection.on("disconnected", () => {
-          console.log("MongoDB disconnected");
-        });
+        mongoose.connection.on("connected", () => {});
+        mongoose.connection.on("error", (err) => {});
+        mongoose.connection.on("disconnected", () => {});
         return mongooseInstance;
       })
       .catch((err) => {
         throw err;
       });
     cached.conn = await cached.promise;
-    console.log("MongoDB connected");
 
     return cached.conn;
   }

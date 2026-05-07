@@ -80,7 +80,6 @@ export async function POST(
         { status: 400 },
       );
     }
-    console.error("Report stall Error", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

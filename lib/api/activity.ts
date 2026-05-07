@@ -4,7 +4,6 @@ import axiosClient, { parseAxiosError } from "../axios";
 export async function getActivities() {
   try {
     const { data } = await axiosClient.get("/activity");
-    console.log("activities data", data);
     return data;
   } catch (error) {
     const parsed = parseAxiosError(error);

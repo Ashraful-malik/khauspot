@@ -88,7 +88,6 @@ export default function Page() {
         setIsExploring(true);
       },
       (error) => {
-        console.log(error);
         toast.error("Location access denied", {
           duration: 5000,
           icon: <LocateOff size={16} />,

@@ -49,7 +49,6 @@ export async function PATCH(
 
     return NextResponse.json({ message: "Review updated" }, { status: 200 });
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
@@ -82,7 +81,6 @@ export async function DELETE(
     await recalculateStallStats(stallId);
     return NextResponse.json({ message: "Review deleted" }, { status: 200 });
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

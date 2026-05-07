@@ -30,7 +30,6 @@ export async function GET(
     }
     return NextResponse.json({ stall });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
@@ -83,10 +82,9 @@ export async function PATCH(
     }
 
     const data = await validateBody(req, updateStallSchema);
-    const { name, address } = data;
+    const { name } = data;
 
     if (name) stall.name = name.trim();
-    if (address) stall.address = address.trim();
 
     await stall.save();
     return NextResponse.json(
@@ -94,7 +92,6 @@ export async function PATCH(
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error updating stall:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

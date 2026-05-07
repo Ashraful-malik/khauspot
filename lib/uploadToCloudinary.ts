@@ -11,7 +11,6 @@ export const uploadImage = async ({ file }: { file: File }) => {
     formData.append("timestamp", timestamp);
     formData.append("signature", signature);
     formData.append("folder", "stalls");
-    console.log("formData", formData);
     const data = await uploadImageApi({ formData });
 
     return {
@@ -19,7 +18,6 @@ export const uploadImage = async ({ file }: { file: File }) => {
       publicId: data.public_id,
     };
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

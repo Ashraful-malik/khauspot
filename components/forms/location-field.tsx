@@ -90,7 +90,6 @@ export default function LocationField({
           onSelect={async (coords) => {
             setIsMapOpen(false);
             setStallLocation(coords);
-            console.log("coords from map selection=-===>", coords);
 
             // 🔥 reverse geocoding
             const res = await fetch(

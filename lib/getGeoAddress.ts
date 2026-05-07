@@ -23,7 +23,6 @@ export async function getGeoAddress(
     );
     return res.data.display_name ?? null;
   } catch (error) {
-    console.error("Error fetching geo address:", error);
     return null;
   }
 }

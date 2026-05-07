@@ -4,7 +4,6 @@ import axiosClient, { parseAxiosError } from "../axios";
 export async function getStallSuggestions() {
   try {
     const { data } = await axiosClient.get("/admin/suggestions");
-    console.log(data);
     return data;
   } catch (error) {
     const parsed = parseAxiosError(error);

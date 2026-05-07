@@ -1,17 +1,20 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// const isProtectedRoute = createRouteMatcher([
-//   "/stalls/:stallId/reviews/new",
-//   "/stalls",
-//   "/stalls/:stallId/reviews/:reviewId",
-// ]);
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "api/stalls/(.*)",
-]);
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect();
+  const { userId, sessionClaims, redirectToSignIn } = await auth();
+
+  if (!isAdminRoute(req)) return;
+
+  if (!userId) {
+    return redirectToSignIn();
+  }
+  const role = sessionClaims?.metadata?.role;
+
+  if (role !== "admin") {
+    return new Response("forbidden", { status: 403 });
+  }
 });
 
 export const config = {

@@ -7,7 +7,6 @@ import { useUser } from "@clerk/nextjs";
 
 export default function StallApproval() {
   const { user } = useUser();
-  console.log("user from clerk--->", user?.id);
   const { data, isLoading, refetch, isFetching } = useStallSuggestions({
     adminId: user?.id,
   });

@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
     await connectDb();
 
     const data = await validateBody(req, createStallSchema);
-    console.log("Data", data);
     const { name, coordinates, address, photos, category } = data;
     const [lat, lng] = coordinates;
 
@@ -83,7 +82,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(newStall, { status: 201 });
   } catch (error) {
-    console.error("Crete Stall Error", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },
@@ -126,8 +124,6 @@ export async function GET(req: NextRequest) {
       .lean();
     return NextResponse.json({ stalls }, { status: 200 });
   } catch (error) {
-    console.error("Get All Stalls Error", error);
-
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },

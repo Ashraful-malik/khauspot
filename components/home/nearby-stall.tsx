@@ -18,7 +18,7 @@ export default function NearByStall({ stalls, isLoading }: any) {
         {stalls === null || isLoading ? (
           <CardSkeleton />
         ) : stalls?.length > 0 ? (
-          stalls.map((stall: any) => (
+          stalls?.map((stall: any) => (
             <StallCard key={stall._id} stall={stall} />
           ))
         ) : (

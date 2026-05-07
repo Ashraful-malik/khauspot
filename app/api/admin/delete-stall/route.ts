@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function DELETE(req: NextRequest) {
   try {
     const { userId } = await auth();
-    console.log("userId", userId);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -48,7 +47,6 @@ export async function DELETE(req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("error while deleting stall", error);
     return NextResponse.json(
       { error: "Internal serverError" },
       { status: 500 },

@@ -1,6 +1,7 @@
 "use client";
 import { LocateFixed } from "lucide-react";
 import { useMap } from "react-leaflet";
+import { toast } from "sonner";
 
 export function GoToUserButton({
   setPosition,
@@ -24,7 +25,7 @@ export function GoToUserButton({
         localStorage.setItem("userCoords", JSON.stringify(coords));
       },
       (err) => {
-        console.error("Location error", err);
+        toast.error(err.message || "Error getting user location ");
       },
     );
   };

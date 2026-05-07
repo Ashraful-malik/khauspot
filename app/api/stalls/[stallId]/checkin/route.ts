@@ -34,10 +34,8 @@ export async function POST(
     await connectDb();
     const { stallId } = await params;
     const data = await validateBody(req, createCheckInSchema);
-    console.log(data);
     const { coordinates, accuracy } = data;
     const [lat, lng] = coordinates;
-    console.log("coordinates", coordinates);
 
     if (accuracy > BAD_ACCURACY) {
       return NextResponse.json(
@@ -100,7 +98,6 @@ export async function POST(
       },
     );
   } catch (error: unknown) {
-    console.error(error);
     if (error instanceof MongoServerError && error.code === 11000) {
       return NextResponse.json(
         { error: "Already checked in today" },
@@ -157,7 +154,6 @@ export async function GET(
         },
       },
     ]);
-    console.log(checkins);
     return NextResponse.json({ checkins }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

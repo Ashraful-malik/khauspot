@@ -16,7 +16,6 @@ export default function FileUpload() {
     setFile(selectedFile);
     if (selectedFile?.type.startsWith("image/")) {
       const url = URL.createObjectURL(selectedFile);
-      console.log("url", url);
       setPreview(url);
     }
   };
@@ -44,7 +43,6 @@ export default function FileUpload() {
       setImageUrl(url);
       toast.success("Image uploaded successfully");
     } catch (error) {
-      console.error(error);
       toast.error("Upload failed", {
         description: "Please try again",
         style: {
@@ -77,7 +75,7 @@ export default function FileUpload() {
       >
         <input
           ref={inputRef}
-          z
+          id="file"
           type="file"
           className="hidden"
           accept="image/*"

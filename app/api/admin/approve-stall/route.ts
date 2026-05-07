@@ -37,7 +37,6 @@ export async function POST(req: NextRequest) {
     }
 
     const userSuggestedStalls = await SuggestedStall.findById(stallId);
-    console.log("suggestedStall ===>", userSuggestedStalls);
 
     if (!userSuggestedStalls || userSuggestedStalls.status !== "pending") {
       return NextResponse.json(
@@ -66,7 +65,6 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.error(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

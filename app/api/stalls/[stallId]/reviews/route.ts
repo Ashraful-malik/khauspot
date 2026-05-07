@@ -80,7 +80,6 @@ export async function POST(
         { status: 409 },
       );
     }
-    console.error("Review Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },
@@ -124,7 +123,6 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Error fetching reviews:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },

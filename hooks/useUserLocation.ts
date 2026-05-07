@@ -11,7 +11,6 @@ export function useUserLocation() {
   const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  console.log("location from useUserLocation ", location);
 
   const formatAddress = (data: any) => {
     const addr = data.address || {};
@@ -70,7 +69,6 @@ export function useUserLocation() {
         address,
       });
     } catch (err: any) {
-      console.log(err);
       if (err.code === 1) {
         setError("Location permission denied");
       } else {

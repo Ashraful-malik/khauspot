@@ -8,7 +8,6 @@ cloudinary.config({
 });
 export async function POST(req: Request) {
   const { publicId } = await req.json();
-  console.log("public_id", publicId);
   await cloudinary.uploader.destroy(publicId);
   return NextResponse.json({
     message: "Image deleted",

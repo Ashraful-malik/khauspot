@@ -9,6 +9,10 @@ function Page() {
   const lng = parseFloat(params.get("lng") || "");
   const router = useRouter();
 
+  if (!lat || !lng) {
+    return null;
+  }
+
   const handleNavigate = () => {
     const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     window.open(url, "_blank");

@@ -85,7 +85,6 @@ export default function Stall() {
 
   const processCheckIn = async (loc: LocationType) => {
     try {
-      console.log("loc from frontend", loc);
       const distance = calculateDistance(
         {
           lat: loc.lat,
@@ -116,7 +115,6 @@ export default function Stall() {
         },
         {
           onSuccess: (response) => {
-            console.log("backend log checkins", data);
             toast.success("Check-in successful");
             const {
               data: { id },
@@ -194,7 +192,7 @@ export default function Stall() {
             alt="stall image"
             fill
             sizes="100vw"
-            quality={100}
+            quality={75}
             priority={currentImage === 0}
             className="object-cover"
           />

@@ -79,7 +79,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(activity.slice(0, 20), { status: 200 });
   } catch (error) {
-    console.log("error while fetching activity", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

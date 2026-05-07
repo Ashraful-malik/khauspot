@@ -19,7 +19,6 @@ export async function GET(req: NextResponse) {
     const client = await clerkClient();
     const clerkUser = await client.users.getUser(userId);
     const role = clerkUser.publicMetadata.role;
-    console.log("Role from clerk api=> ", role);
 
     if (role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });

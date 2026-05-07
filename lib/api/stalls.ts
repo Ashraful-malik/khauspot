@@ -30,7 +30,6 @@ export async function fetchNearbyStalls({
         lng,
       },
     });
-    console.log(data);
     return data;
   } catch (error) {
     const parsed = parseAxiosError(error);

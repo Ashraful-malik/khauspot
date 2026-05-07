@@ -15,12 +15,10 @@ export type commentPayload = {
 // create checkin
 export async function createCheckInApi(payload: checkInPayload) {
   try {
-    console.log("payload from checkins", payload);
     const { stallId, ...body } = payload;
     const { data } = await axiosClient.post(`/stalls/${stallId}/checkin`, body);
     return data;
   } catch (error) {
-    console.log(error);
     const parsed = parseAxiosError(error);
     throw parsed;
   }
@@ -29,7 +27,6 @@ export async function createCheckInApi(payload: checkInPayload) {
 // add comment on checkin
 export async function createCheckInCommentApi(payload: commentPayload) {
   try {
-    console.log("payload from checkins", payload);
     const { stallId, ...body } = payload;
     const { data } = await axiosClient.post(
       `/stalls/${stallId}/checkin/comment`,
@@ -37,7 +34,6 @@ export async function createCheckInCommentApi(payload: commentPayload) {
     );
     return data;
   } catch (error) {
-    console.log(error);
     const parsed = parseAxiosError(error);
     throw parsed;
   }
