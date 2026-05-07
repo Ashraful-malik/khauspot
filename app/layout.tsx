@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { Inter, Be_Vietnam_Pro } from "next/font/google";
+// @ts-ignore: CSS import declaration missing for globals.css
 import "./globals.css";
 import Provider from "./provider";
+// @ts-ignore: CSS module declaration missing for leaflet package
 import "leaflet/dist/leaflet.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import LeafletSetup from "@/lib/leaflet";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const be_vietnam_pro = Be_Vietnam_Pro({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
   subsets: ["latin"],

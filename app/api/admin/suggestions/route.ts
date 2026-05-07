@@ -2,10 +2,10 @@ import connectDb from "@/lib/db";
 import SuggestedStall from "@/models/SuggestedStall";
 import User from "@/models/User";
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // Get all pending stalls suggestions
-export async function GET(req: NextResponse) {
+export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
