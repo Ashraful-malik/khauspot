@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 const navItems = [
-  { title: "Home", href: "/", icon: House },
+  { title: "Home", href: "/home", icon: House },
   { title: "Map", href: "/map", icon: MapPinned },
   { title: "Add", href: "/add", icon: CirclePlus },
   { title: "Activity", href: "/activity", icon: History },
